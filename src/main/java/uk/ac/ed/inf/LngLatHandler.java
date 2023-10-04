@@ -24,4 +24,9 @@ public class LngLatHandler implements LngLatHandling{
     public LngLat nextPosition(LngLat startPosition, double angle) {
         return null;
     }
+
+    @Override
+    public boolean isInCentralArea(LngLat point, NamedRegion centralArea) {
+        return false;
+    }
 }
