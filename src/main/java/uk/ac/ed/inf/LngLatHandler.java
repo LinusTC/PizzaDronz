@@ -5,6 +5,7 @@ import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.interfaces.LngLatHandling;
 
 public class LngLatHandler implements LngLatHandling{
+
     @Override
     public double distanceTo(LngLat startPosition, LngLat endPosition) {
         double x1 = startPosition.lng();
@@ -26,16 +27,52 @@ public class LngLatHandler implements LngLatHandling{
 
     @Override
     public boolean isInRegion(LngLat position, NamedRegion region) {
-        return false;
+        LngLat[] vertices = region.vertices();
+
+        return isPointInRegion(vertices, position);
     }
 
     @Override
     public LngLat nextPosition(LngLat startPosition, double angle) {
-        return null;
+
+        double radians = Math.toRadians(angle);
+
+        double nextX = 0.00015 * Math.cos(radians);
+        double nextY = 0.00015 * Math.sin(radians);
+
+        return new LngLat(nextX, nextY);
     }
 
     @Override
     public boolean isInCentralArea(LngLat point, NamedRegion centralArea) {
         return false;
+    }
+
+
+    //Point in polygon alg found online
+    static boolean isPointInRegion(LngLat[] vertices, LngLat position ){
+        boolean temp = false;
+
+        double x = position.lng();
+        double y = position.lat();
+
+        int numVertices = vertices.length;
+
+        double[] xVertices = new double[numVertices];
+        double[] yVertices = new double[numVertices];
+
+
+        for(int k = 0; k < numVertices;k++){
+            xVertices[k] = vertices[k].lng();
+            yVertices[k] = vertices[k].lat();
+        }
+
+        for (int i = 0, j = numVertices - 1; i < numVertices; j = i++) {
+            if (((yVertices[i] > y) != (yVertices[j] > y)) &&
+                    (x < (xVertices[j] - xVertices[i]) * (y - yVertices[i]) / (yVertices[j] - yVertices[i]) + xVertices[i])) {
+                temp = !temp;
+            }
+        }
+        return temp;
     }
 }
