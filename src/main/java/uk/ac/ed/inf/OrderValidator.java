@@ -24,7 +24,7 @@ public class OrderValidator implements OrderValidation {
         }
 
         String expiryDate = orderToValidate.getCreditCardInformation().getCreditCardExpiry();
-        if (isExpired(expiryDate)){
+        if (validExpirationDate(expiryDate)){
             orderToValidate.setOrderValidationCode(OrderValidationCode.EXPIRY_DATE_INVALID);
             orderToValidate.setOrderStatus(OrderStatus.INVALID);
             return orderToValidate;
@@ -77,6 +77,9 @@ public class OrderValidator implements OrderValidation {
     static boolean checkLuhn(String cardNum){
         int digits = cardNum.length();
 
+        if (digits == 0){
+            return false;
+        }
         int numSum = 0;
         boolean temp = false;
 
@@ -97,20 +100,35 @@ public class OrderValidator implements OrderValidation {
     }
 
     //check expiration date validity
-    static boolean isExpired (String expDate) {
+    static boolean validExpirationDate (String expDate) {
 
-        SimpleDateFormat SDF = new SimpleDateFormat("MM/yy");
-        SDF.setLenient(false);
-
-        Date expiry;
-
-        try {
-            expiry = SDF.parse(expDate);
-        } catch (ParseException e) {
-            return false;
+        if (expDate == null){
+            return true;
         }
 
-        return expiry.before(new Date());
+        String regex = "^(0[1-9]|1[0-2])/([0-9]{2})$";
+
+        Pattern p = Pattern.compile(regex);
+
+        Matcher m = p.matcher(expDate);
+
+        if (!m.matches()){
+            return true;
+        }
+        else{
+            SimpleDateFormat SDF = new SimpleDateFormat("MM/yy");
+            SDF.setLenient(false);
+
+            Date expiry;
+
+            try {
+                expiry = SDF.parse(expDate);
+            } catch (ParseException e) {
+                return false;
+            }
+
+            return expiry.before(new Date());
+        }
     }
 
     //Check CVV validity
