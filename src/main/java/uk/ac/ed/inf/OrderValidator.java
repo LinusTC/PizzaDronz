@@ -43,14 +43,14 @@ public class OrderValidator implements OrderValidation {
             return orderToValidate;
         }
 
-        if (!validPizzaCount(orderToValidate)){
-            orderToValidate.setOrderValidationCode(OrderValidationCode.MAX_PIZZA_COUNT_EXCEEDED);
+        if (!validPizzas(orderToValidate, definedRestaurants)){
+            orderToValidate.setOrderValidationCode(OrderValidationCode.PIZZA_NOT_DEFINED);
             orderToValidate.setOrderStatus(OrderStatus.INVALID);
             return orderToValidate;
         }
 
-        if (!validPizzas(orderToValidate, definedRestaurants)){
-            orderToValidate.setOrderValidationCode(OrderValidationCode.PIZZA_NOT_DEFINED);
+        if (!validPizzaCount(orderToValidate)){
+            orderToValidate.setOrderValidationCode(OrderValidationCode.MAX_PIZZA_COUNT_EXCEEDED);
             orderToValidate.setOrderStatus(OrderStatus.INVALID);
             return orderToValidate;
         }
