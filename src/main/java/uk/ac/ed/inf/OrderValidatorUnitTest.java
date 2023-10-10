@@ -1,6 +1,5 @@
 package uk.ac.ed.inf;
 
-import uk.ac.ed.inf.OrderValidator;
 import uk.ac.ed.inf.ilp.data.CreditCardInformation;
 import uk.ac.ed.inf.ilp.constant.OrderStatus;
 import uk.ac.ed.inf.ilp.constant.OrderValidationCode;
@@ -10,16 +9,17 @@ import uk.ac.ed.inf.ilp.data.Pizza;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+
 import uk.ac.ed.inf.ilp.data.Restaurant;
 
-public class UnitTest
+public class OrderValidatorUnitTest
 {
     public static void main( String[] args )
     {
         CreditCardInformation creditCardSample = new CreditCardInformation();
 
         creditCardSample.setCvv("952");
-        creditCardSample.setCreditCardNumber("13499472696504");
+        creditCardSample.setCreditCardNumber("378282246310005");
         creditCardSample.setCreditCardExpiry("06/28");
 
 
@@ -53,7 +53,7 @@ public class UnitTest
         sampleOrder.setOrderStatus(OrderStatus.UNDEFINED);
         sampleOrder.setOrderValidationCode(OrderValidationCode.UNDEFINED);
         sampleOrder.setOrderNo("19514FE0");
-        sampleOrder.setPriceTotalInPence(2400);
+        sampleOrder.setPriceTotalInPence(2300);
         sampleOrder.setCreditCardInformation(creditCardSample);
         sampleOrder.setOrderDate(date);
         sampleOrder.setPizzasInOrder(pizzas);
@@ -62,8 +62,7 @@ public class UnitTest
 
         validator.validateOrder(sampleOrder,restaurants);
 
-        System.out.println(validator);
-        System.out.println("Hello");
-
+        System.out.println(sampleOrder.getOrderStatus());
+        System.out.println(sampleOrder.getOrderValidationCode());
     }
 }

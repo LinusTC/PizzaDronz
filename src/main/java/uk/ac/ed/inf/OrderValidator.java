@@ -128,6 +128,18 @@ public class OrderValidator implements OrderValidation {
         return m.matches();
     }
 
+    //Check if price total is accurate
+    static boolean totalAccurate (Order order){
+
+        int customerTotal = order.getPriceTotalInPence();
+        int menuTotal = 0;
+        for (Pizza pizza: order.getPizzasInOrder()){
+            menuTotal += pizza.priceInPence();
+        }
+
+        return customerTotal==menuTotal;
+    }
+
     //Check number of pizzas is valid
     static boolean validPizzaCount (Order order){
         return order.getPizzasInOrder().length >= 1 && order.getPizzasInOrder().length <= 4;
@@ -136,8 +148,10 @@ public class OrderValidator implements OrderValidation {
     //Find which restaurant a pizza is from
     static Restaurant findPizzaRestaurant(Pizza pizza, Restaurant[] definedRestaurants){
         for (Restaurant restaurant: definedRestaurants){
-            if (Arrays.stream(restaurant.menu()).anyMatch(matchPizza -> matchPizza == pizza)){
-                return restaurant;
+            for(Pizza menuPizza: restaurant.menu()){
+                if(menuPizza.name().equals(pizza.name())){
+                    return restaurant;
+                }
             }
         }
         return null;
@@ -180,18 +194,6 @@ public class OrderValidator implements OrderValidation {
         }
 
         return true;
-    }
-
-    //Check if price total is accurate
-    static boolean totalAccurate (Order order){
-
-        int customerTotal = order.getPriceTotalInPence();
-        int menuTotal = 0;
-        for (Pizza pizza: order.getPizzasInOrder()){
-            menuTotal += pizza.priceInPence();
-        }
-
-        return customerTotal==menuTotal;
     }
 
     //Check if restaurant is open on order day
