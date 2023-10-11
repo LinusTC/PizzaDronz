@@ -19,7 +19,7 @@ public class LngLatHandlerUnitTest {
         LngLatHandler lngLatHandler = new LngLatHandler();
         double distance = lngLatHandler.distanceTo(startPosition,endPosition);
         boolean isCloseTo = lngLatHandler.isCloseTo(startPosition,endPosition);
-        LngLat nextPosition = lngLatHandler.nextPosition(startPosition, 0);
+        LngLat nextPosition = lngLatHandler.nextPosition(startPosition, 999);
         boolean isInRegion = lngLatHandler.isInRegion(new LngLat(0.00005,0.00005), region);
 
         System.out.println(distance);

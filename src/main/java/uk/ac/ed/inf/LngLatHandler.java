@@ -35,6 +35,10 @@ public class LngLatHandler implements LngLatHandling{
     @Override
     public LngLat nextPosition(LngLat startPosition, double angle) {
 
+        if (angle == 999){
+            return startPosition;
+        }
+
         double nextX = startPosition.lng() + (.00015 * Math.cos(Math.toRadians(angle)));
         double nextY = startPosition.lat() + (.00015 * Math.sin(Math.toRadians(angle)));
 
