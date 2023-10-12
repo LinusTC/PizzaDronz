@@ -24,7 +24,7 @@ public class OrderValidator implements OrderValidation {
         }
 
         String expiryDate = orderToValidate.getCreditCardInformation().getCreditCardExpiry();
-        if (validExpirationDate(expiryDate)){
+        if (!validExpirationDate(expiryDate)){
             orderToValidate.setOrderValidationCode(OrderValidationCode.EXPIRY_DATE_INVALID);
             orderToValidate.setOrderStatus(OrderStatus.INVALID);
             return orderToValidate;
@@ -103,7 +103,7 @@ public class OrderValidator implements OrderValidation {
     static boolean validExpirationDate (String expDate) {
 
         if (expDate == null){
-            return true;
+            return false;
         }
 
         String regex = "^(0[1-9]|1[0-2])/([0-9]{2})$";
@@ -113,7 +113,7 @@ public class OrderValidator implements OrderValidation {
         Matcher m = p.matcher(expDate);
 
         if (!m.matches()){
-            return true;
+            return false;
         }
         else{
             SimpleDateFormat SDF = new SimpleDateFormat("MM/yy");
@@ -127,7 +127,7 @@ public class OrderValidator implements OrderValidation {
                 return false;
             }
 
-            return expiry.before(new Date());
+            return expiry.after(new Date());
         }
     }
 
