@@ -150,12 +150,14 @@ public class OrderValidator implements OrderValidation {
     static boolean totalAccurate (Order order){
 
         int customerTotal = order.getPriceTotalInPence();
+        int deliveryFee = 100;
         int menuTotal = 0;
         for (Pizza pizza: order.getPizzasInOrder()){
             menuTotal += pizza.priceInPence();
         }
 
-        return customerTotal==menuTotal;
+
+        return customerTotal==(menuTotal + deliveryFee);
     }
 
     //Check number of pizzas is valid

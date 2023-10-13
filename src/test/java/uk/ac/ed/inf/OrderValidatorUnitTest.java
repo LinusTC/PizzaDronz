@@ -53,7 +53,7 @@ public class OrderValidatorUnitTest
         sampleOrder.setOrderStatus(OrderStatus.UNDEFINED);
         sampleOrder.setOrderValidationCode(OrderValidationCode.UNDEFINED);
         sampleOrder.setOrderNo("19514FE0");
-        sampleOrder.setPriceTotalInPence(2300);
+        sampleOrder.setPriceTotalInPence(2400);
         sampleOrder.setCreditCardInformation(creditCardSample);
         sampleOrder.setOrderDate(date);
         sampleOrder.setPizzasInOrder(pizzas);
