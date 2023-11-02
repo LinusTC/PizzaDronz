@@ -18,7 +18,7 @@ public class App
     public static void main( String[] args ) throws JsonProcessingException {
 
         Restaurant[] restaurants = restaurantsData();
-
+        /*
         System.out.println(getCentralAreaData().name());
         for (LngLat vertex: getCentralAreaData().vertices()){
             System.out.print(vertex);
@@ -51,7 +51,7 @@ public class App
         System.out.println();
 
 
-        Order order = getOrderData()[2];
+        Order order = getOrderData()[3];
         for (int i = 0; i < 2; i++) {
             System.out.println("Pizzas Number:" + order.getOrderNo());
             System.out.println("Pizzas Date:" + order.getOrderDate());
@@ -68,6 +68,17 @@ public class App
             validator.validateOrder(order, restaurants);
         }
         System.out.println();
+
+        LngLat sampleInCenter = new LngLat(-3.1913256901223406, 55.94571464973686);
+        LngLat sampleNotInCenter = new LngLat(-3.1933472253281536, 55.94576526828331);
+        LngLatHandler handler = new LngLatHandler();
+
+        System.out.println(handler.distanceTo(sampleInCenter, getCentralAreaData().vertices()[0]));
+        System.out.println(handler.isCloseTo(sampleInCenter,new LngLat(sampleInCenter.lng() + 0.0002, sampleInCenter.lat())));
+        System.out.println(handler.isInCentralArea(sampleInCenter, getCentralAreaData()));
+        System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
+
+        */
 
     }
 

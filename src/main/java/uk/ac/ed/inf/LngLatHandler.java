@@ -53,7 +53,7 @@ public class LngLatHandler implements LngLatHandling{
 
     @Override
     public boolean isInCentralArea(LngLat point, NamedRegion centralArea) {
-        return false;
+        return isPointInRegion(centralArea.vertices(), point);
     }
 
 
