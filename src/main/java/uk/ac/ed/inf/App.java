@@ -12,13 +12,14 @@ import java.time.DayOfWeek;
 import java.util.Arrays;
 import uk.ac.ed.inf.ilp.data.Restaurant;
 
+import static uk.ac.ed.inf.GetRest.*;
+
 
 public class App
 {
     public static void main( String[] args ) throws JsonProcessingException {
 
         Restaurant[] restaurants = restaurantsData();
-        /*
         System.out.println(getCentralAreaData().name());
         for (LngLat vertex: getCentralAreaData().vertices()){
             System.out.print(vertex);
@@ -78,44 +79,6 @@ public class App
         System.out.println(handler.isInCentralArea(sampleInCenter, getCentralAreaData()));
         System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
 
-        */
-
     }
 
-    public static String getData (String url){
-        WebClient.Builder builder = WebClient.builder();
-
-        return builder
-                .codecs(codecs -> codecs
-                        .defaultCodecs()
-                        .maxInMemorySize(10 * 1024 * 1024))
-                .build()
-                .get()
-                .uri(url)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-    }
-
-    public static Restaurant[] restaurantsData () throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        return objectMapper.readValue(getData("https://ilp-rest.azurewebsites.net/restaurants"), Restaurant[].class);
-    }
-
-    public static NamedRegion getCentralAreaData () throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(getData("https://ilp-rest.azurewebsites.net/centralArea"), NamedRegion.class);
-    }
-
-    public static NamedRegion[] getNoFlyZones () throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(getData("https://ilp-rest.azurewebsites.net/noFlyZones"), NamedRegion[].class);
-    }
-
-    public static Order[] getOrderData () throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        return objectMapper.readValue(getData("https://ilp-rest.azurewebsites.net/orders"), Order[].class);
-    }
 }
