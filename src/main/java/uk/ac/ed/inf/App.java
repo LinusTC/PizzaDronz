@@ -23,6 +23,7 @@ public class App
         for (LngLat vertex: getCentralAreaData().vertices()){
             System.out.print(vertex);
         }
+        System.out.println();
 
         for(NamedRegion regions: getNoFlyZones()) {
             System.out.println();
@@ -30,8 +31,8 @@ public class App
             for (LngLat vertex : regions.vertices()) {
                 System.out.print(vertex);
             }
+            System.out.println();
         }
-
         System.out.println();
 
         for (Restaurant restaurant : restaurants) {
@@ -47,32 +48,27 @@ public class App
             }
             System.out.println();
         }
-
-        Order order = getOrderData()[0];
-
-        System.out.println("Pizzas Number:" +order.getOrderNo());
-        System.out.println("Pizzas Date:" + order.getOrderDate());
-        System.out.println("Pizzas Status:" + order.getOrderStatus());
-        System.out.println("Pizzas Validation Code:" + order.getOrderValidationCode());
-        System.out.println("Pizzas Price:" + order.getPriceTotalInPence());
-        System.out.println("Pizzas include:" + Arrays.toString(order.getPizzasInOrder()));
-        System.out.println("Credit Card CVV:" + order.getCreditCardInformation().getCvv());
-        System.out.println("Credit Card Number:" + order.getCreditCardInformation().getCreditCardExpiry());
-        System.out.println("Credit Card Expiry Date:" + order.getCreditCardInformation().getCreditCardNumber());
-
-        OrderValidator validator = new OrderValidator();
-        validator.validateOrder(order, restaurants);
-
         System.out.println();
-        System.out.println("Pizzas Number:" +order.getOrderNo());
-        System.out.println("Pizzas Date:" + order.getOrderDate());
-        System.out.println("Pizzas Status:" + order.getOrderStatus());
-        System.out.println("Pizzas Validation Code:" + order.getOrderValidationCode());
-        System.out.println("Pizzas Price:" + order.getPriceTotalInPence());
-        System.out.println("Pizzas include:" + Arrays.toString(order.getPizzasInOrder()));
-        System.out.println("Credit Card CVV:" + order.getCreditCardInformation().getCvv());
-        System.out.println("Credit Card Number:" + order.getCreditCardInformation().getCreditCardExpiry());
-        System.out.println("Credit Card Expiry Date:" + order.getCreditCardInformation().getCreditCardNumber());
+
+
+        Order order = getOrderData()[2];
+        for (int i = 0; i < 2; i++) {
+            System.out.println("Pizzas Number:" + order.getOrderNo());
+            System.out.println("Pizzas Date:" + order.getOrderDate());
+            System.out.println("Pizzas Status:" + order.getOrderStatus());
+            System.out.println("Pizzas Validation Code:" + order.getOrderValidationCode());
+            System.out.println("Pizzas Price:" + order.getPriceTotalInPence());
+            System.out.println("Pizzas include:" + Arrays.toString(order.getPizzasInOrder()));
+            System.out.println("Credit Card Number:" + order.getCreditCardInformation().getCreditCardNumber());
+            System.out.println("Credit Card CVV:" + order.getCreditCardInformation().getCvv());
+            System.out.println("Credit Card Expiry Date:" + order.getCreditCardInformation().getCreditCardExpiry());
+            System.out.println();
+
+            OrderValidator validator = new OrderValidator();
+            validator.validateOrder(order, restaurants);
+        }
+        System.out.println();
+
     }
 
     public static String getData (String url){
@@ -81,7 +77,7 @@ public class App
         return builder
                 .codecs(codecs -> codecs
                         .defaultCodecs()
-                        .maxInMemorySize(4 * 1024 * 1024))
+                        .maxInMemorySize(10 * 1024 * 1024))
                 .build()
                 .get()
                 .uri(url)
