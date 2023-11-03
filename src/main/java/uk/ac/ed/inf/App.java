@@ -8,7 +8,6 @@ import uk.ac.ed.inf.ilp.data.NamedRegion;
 import java.time.DayOfWeek;
 import java.util.Arrays;
 import uk.ac.ed.inf.ilp.data.Restaurant;
-
 import static uk.ac.ed.inf.GetRest.*;
 
 
