@@ -12,7 +12,8 @@ import java.time.LocalDate;
 import java.util.Arrays;
 
 public class GetDataFromRest {
-    public static String getData (String url){
+    private static final String BASE_URL = "https://ilp-rest.azurewebsites.net";
+    public static String getData (String path){
         WebClient.Builder builder = WebClient.builder();
 
         return builder
@@ -21,7 +22,7 @@ public class GetDataFromRest {
                         .maxInMemorySize(10 * 1024 * 1024))
                 .build()
                 .get()
-                .uri(url)
+                .uri(BASE_URL + path)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
@@ -31,7 +32,7 @@ public class GetDataFromRest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
-            return objectMapper.readValue(getData("https://ilp-rest.azurewebsites.net/restaurants"), Restaurant[].class);
+            return objectMapper.readValue(getData("/restaurants"), Restaurant[].class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -41,7 +42,7 @@ public class GetDataFromRest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
-            return objectMapper.readValue(getData("https://ilp-rest.azurewebsites.net/centralArea"), NamedRegion.class);
+            return objectMapper.readValue(getData("/centralArea"), NamedRegion.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -51,7 +52,7 @@ public class GetDataFromRest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
-            return objectMapper.readValue(getData("https://ilp-rest.azurewebsites.net/noFlyZones"), NamedRegion[].class);
+            return objectMapper.readValue(getData("/noFlyZones"), NamedRegion[].class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -62,7 +63,7 @@ public class GetDataFromRest {
         objectMapper.registerModule(new JavaTimeModule());
 
         try {
-            return objectMapper.readValue(getData("https://ilp-rest.azurewebsites.net/orders"), Order[].class);
+            return objectMapper.readValue(getData("/orders"), Order[].class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
