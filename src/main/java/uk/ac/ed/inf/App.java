@@ -18,12 +18,14 @@ public class App
 
         Restaurant[] restaurants = restaurantsData();
 
+        //Test to get Central Area
         System.out.println(getCentralAreaData().name());
         for (LngLat vertex: getCentralAreaData().vertices()){
             System.out.print(vertex);
         }
         System.out.println();
 
+        //Test to get NoFlyZones
         for(NamedRegion regions: getNoFlyZones()) {
             System.out.println();
             System.out.println(regions.name());
@@ -34,6 +36,7 @@ public class App
         }
         System.out.println();
 
+        //Test to get all Restaurant info
         for (Restaurant restaurant : restaurants) {
             System.out.println("Restaurant Name: " + restaurant.name());
             System.out.println("Location: " + restaurant.location());
@@ -49,7 +52,7 @@ public class App
         }
         System.out.println();
 
-
+        //Test to Validate order number i
         Order order = getOrderData()[3];
         for (int i = 0; i < 2; i++) {
             System.out.println("Pizzas Number:" + order.getOrderNo());
@@ -68,18 +71,9 @@ public class App
         }
         System.out.println();
 
-        LngLat sampleInCenter = new LngLat(-3.1913256901223406, 55.94571464973686);
-        LngLat sampleNotInCenter = new LngLat(-3.1933472253281536, 55.94576526828331);
-        LngLatHandler handler = new LngLatHandler();
-
-        System.out.println(handler.distanceTo(sampleInCenter, getCentralAreaData().vertices()[0]));
-        System.out.println(handler.isCloseTo(sampleInCenter,new LngLat(sampleInCenter.lng() + 0.0002, sampleInCenter.lat())));
-        System.out.println(handler.isInCentralArea(sampleInCenter, getCentralAreaData()));
-        System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
-
+        //Test to get all Pizzas ordered on specific date
         LocalDate date = LocalDate.of(2023,9,1);
         Order[] ordersOnDate = getOrdersOnDay(date);
-
         for (Order orders: ordersOnDate){
             System.out.println("Pizzas Number:" + orders.getOrderNo());
             System.out.println("Pizzas Date:" + orders.getOrderDate());
@@ -92,9 +86,22 @@ public class App
             System.out.println("Credit Card Expiry Date:" + orders.getCreditCardInformation().getCreditCardExpiry());
             System.out.println();
         }
-
         System.out.println(ordersOnDate.length);
 
+        //LngLatHandler Tests
+        LngLat sampleInCenter = new LngLat(-3.1913256901223406, 55.94571464973686);
+        LngLat sampleNotInCenter = new LngLat(-3.1933472253281536, 55.94576526828331);
+        LngLatHandler handler = new LngLatHandler();
+        System.out.println(handler.distanceTo(sampleInCenter, getCentralAreaData().vertices()[0]));
+        System.out.println(handler.isCloseTo(sampleInCenter,new LngLat(sampleInCenter.lng() + 0.0002, sampleInCenter.lat())));
+        System.out.println(handler.isInCentralArea(sampleInCenter, getCentralAreaData()));
+        System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
+
+        //Test to check distance to Central from restaurant.
+        for (Restaurant restaurant: restaurants) {
+            double distance = PathCharter.distanceToCentral(restaurant.location());
+            System.out.println(distance);
+        }
     }
 
 }
