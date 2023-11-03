@@ -5,13 +5,14 @@ import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class PathCharter {
-    public static double distanceToCentral (LngLat startingPoint) throws JsonProcessingException {
+    public static LngLat closestEdge (LngLat startingPoint) throws JsonProcessingException {
 
         //Check if starting point is in Central
         if(new LngLatHandler().isInCentralArea(startingPoint,GetDataFromRest.getCentralAreaData())){
-            return 0;
+            return null;
         }
 
         double closestX, closestY;
@@ -33,7 +34,6 @@ public class PathCharter {
             }
             else closestY = Math.min(y, yMax);
         }
-
         else if (x <= xMax) {
             closestX = x;
             if(y < yMin){
@@ -43,7 +43,6 @@ public class PathCharter {
                 closestY = yMax;
             }
         }
-
         else{
             closestX = xMax;
             if(y < yMin){
@@ -52,8 +51,7 @@ public class PathCharter {
             else closestY = Math.min(y, yMax);
 
         }
-
-        return new LngLatHandler().distanceTo(startingPoint, new LngLat(closestX,closestY));
+        return new LngLat(closestX,closestY);
     }
 
 }

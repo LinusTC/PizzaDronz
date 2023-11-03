@@ -97,11 +97,6 @@ public class App
         System.out.println(handler.isInCentralArea(sampleInCenter, getCentralAreaData()));
         System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
 
-        //Test to check distance to Central from restaurant.
-        for (Restaurant restaurant: restaurants) {
-            double distance = PathCharter.distanceToCentral(restaurant.location());
-            System.out.println(distance);
-        }
     }
 
 }
