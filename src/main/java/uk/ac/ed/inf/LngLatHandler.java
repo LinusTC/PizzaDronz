@@ -58,7 +58,7 @@ public class LngLatHandler implements LngLatHandling{
     }
 
 
-    //Point in polygon alg found online
+    //Point in polygon algorithm found online
     static boolean isPointInRegion(LngLat[] vertices, LngLat position ){
         boolean temp = false;
 

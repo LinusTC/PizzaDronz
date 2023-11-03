@@ -5,7 +5,7 @@ import uk.ac.ed.inf.ilp.data.LngLat;
 public class PathCharter {
     public static LngLat closestEdge (LngLat startingPoint){
 
-        //Check if starting point is in Central
+        //Check if starting point is already in central
         if(new LngLatHandler().isInCentralArea(startingPoint,GetDataFromRest.getCentralAreaData())){
             return startingPoint;
         }
@@ -22,6 +22,7 @@ public class PathCharter {
         double yMin = vertices[2].lat();
         double yMax = vertices[0].lat();
 
+        //Finds the closest point on central box
         if (x < xMin){
             closestX = xMin;
             if(y < yMin){
