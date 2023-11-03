@@ -1,18 +1,13 @@
 package uk.ac.ed.inf;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import uk.ac.ed.inf.ilp.data.LngLat;
-import uk.ac.ed.inf.ilp.data.NamedRegion;
-
-import java.util.Arrays;
-import java.util.Objects;
 
 public class PathCharter {
-    public static LngLat closestEdge (LngLat startingPoint) throws JsonProcessingException {
+    public static LngLat closestEdge (LngLat startingPoint){
 
         //Check if starting point is in Central
         if(new LngLatHandler().isInCentralArea(startingPoint,GetDataFromRest.getCentralAreaData())){
-            return null;
+            return startingPoint;
         }
 
         double closestX, closestY;
@@ -53,5 +48,4 @@ public class PathCharter {
         }
         return new LngLat(closestX,closestY);
     }
-
 }

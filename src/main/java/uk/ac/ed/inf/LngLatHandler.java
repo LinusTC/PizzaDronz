@@ -1,6 +1,5 @@
 package uk.ac.ed.inf;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.interfaces.LngLatHandling;
@@ -55,11 +54,7 @@ public class LngLatHandler implements LngLatHandling{
 
     @Override
     public boolean isInCentralArea(LngLat point, NamedRegion centralArea) {
-        try {
-            return isPointInRegion(getCentralAreaData().vertices(), point);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        return isPointInRegion(getCentralAreaData().vertices(), point);
     }
 
 

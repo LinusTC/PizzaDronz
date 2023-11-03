@@ -27,29 +27,48 @@ public class GetDataFromRest {
                 .block();
     }
 
-    public static Restaurant[] restaurantsData () throws JsonProcessingException {
+    public static Restaurant[] restaurantsData (){
         ObjectMapper objectMapper = new ObjectMapper();
 
-        return objectMapper.readValue(getData("https://ilp-rest.azurewebsites.net/restaurants"), Restaurant[].class);
+        try {
+            return objectMapper.readValue(getData("https://ilp-rest.azurewebsites.net/restaurants"), Restaurant[].class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static NamedRegion getCentralAreaData () throws JsonProcessingException {
+    public static NamedRegion getCentralAreaData (){
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(getData("https://ilp-rest.azurewebsites.net/centralArea"), NamedRegion.class);
+
+        try {
+            return objectMapper.readValue(getData("https://ilp-rest.azurewebsites.net/centralArea"), NamedRegion.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static NamedRegion[] getNoFlyZones () throws JsonProcessingException {
+    public static NamedRegion[] getNoFlyZones (){
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(getData("https://ilp-rest.azurewebsites.net/noFlyZones"), NamedRegion[].class);
+
+        try {
+            return objectMapper.readValue(getData("https://ilp-rest.azurewebsites.net/noFlyZones"), NamedRegion[].class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static Order[] getOrderData () throws JsonProcessingException {
+    public static Order[] getOrderData (){
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        return objectMapper.readValue(getData("https://ilp-rest.azurewebsites.net/orders"), Order[].class);
+
+        try {
+            return objectMapper.readValue(getData("https://ilp-rest.azurewebsites.net/orders"), Order[].class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public  static Order[] getOrdersOnDay (LocalDate date) throws JsonProcessingException {
+    public  static Order[] getOrdersOnDay (LocalDate date){
 
         Order[] orders = getOrderData();
 

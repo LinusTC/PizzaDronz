@@ -1,6 +1,5 @@
 package uk.ac.ed.inf;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.ilp.data.Pizza;
@@ -14,7 +13,7 @@ import static uk.ac.ed.inf.GetDataFromRest.*;
 
 public class App
 {
-    public static void main( String[] args ) throws JsonProcessingException {
+    public static void main( String[] args ){
 
         Restaurant[] restaurants = restaurantsData();
 
@@ -84,15 +83,16 @@ public class App
             System.out.println("Credit Card Number:" + orders.getCreditCardInformation().getCreditCardNumber());
             System.out.println("Credit Card CVV:" + orders.getCreditCardInformation().getCvv());
             System.out.println("Credit Card Expiry Date:" + orders.getCreditCardInformation().getCreditCardExpiry());
-            System.out.println();
         }
-        System.out.println(ordersOnDate.length);
+        System.out.println("Number of Orders on " + date + " is: " + ordersOnDate.length);
+        System.out.println();
 
         //LngLatHandler Tests
         LngLat sampleInCenter = new LngLat(-3.1913256901223406, 55.94571464973686);
         LngLat sampleNotInCenter = new LngLat(-3.1933472253281536, 55.94576526828331);
         LngLatHandler handler = new LngLatHandler();
-        System.out.println(handler.distanceTo(sampleInCenter, getCentralAreaData().vertices()[0]));
+        System.out.println(handler.distanceTo(sampleInCenter, PathCharter.closestEdge(sampleInCenter)));
+        System.out.println(handler.distanceTo(sampleNotInCenter, PathCharter.closestEdge(sampleNotInCenter)));
         System.out.println(handler.isCloseTo(sampleInCenter,new LngLat(sampleInCenter.lng() + 0.0002, sampleInCenter.lat())));
         System.out.println(handler.isInCentralArea(sampleInCenter, getCentralAreaData()));
         System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
