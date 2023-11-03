@@ -70,9 +70,10 @@ public class App
         }
         System.out.println();
 
-        //Test to get all Pizzas ordered on specific date
-        LocalDate date = LocalDate.of(2023,9,1);
+        //Test to get all orders/validOrders on specific date
+        LocalDate date = LocalDate.of(202,9,1);
         Order[] ordersOnDate = getOrdersOnDay(date);
+        Order[] validOrdersOnDate = getValidOrdersOnDay(date);
         for (Order orders: ordersOnDate){
             System.out.println("Pizzas Number:" + orders.getOrderNo());
             System.out.println("Pizzas Date:" + orders.getOrderDate());
@@ -97,12 +98,7 @@ public class App
         System.out.println(handler.isCloseTo(sampleInCenter,new LngLat(sampleInCenter.lng() + 0.0002, sampleInCenter.lat())));
         System.out.println(handler.isInCentralArea(sampleInCenter, getCentralAreaData()));
         System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
-
-        //Create Deliveries Json
-        LocalDate date1 = LocalDate.of(2023,9,1);
-        LocalDate date2 = LocalDate.of(2023,9,2);
-        CreateJsonDocuments.createDeliveries(date1);
-        CreateJsonDocuments.createDeliveries(date2);
          */
+
     }
 }

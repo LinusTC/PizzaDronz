@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.web.reactive.function.client.WebClient;
+import uk.ac.ed.inf.ilp.constant.OrderStatus;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.ilp.data.Restaurant;
@@ -74,6 +75,19 @@ public class GetDataFromRest {
 
         return Arrays.stream(orders)
                 .filter(order -> order.getOrderDate().equals(date))
+                .toArray(Order[]::new);
+    }
+
+    public  static Order[] getValidOrdersOnDay (LocalDate date){
+
+        Order[] orders = getOrdersOnDay(date);
+
+        for (Order order: orders){
+            new OrderValidator().validateOrder(order, getRestaurantsData());
+        }
+
+        return Arrays.stream(orders)
+                .filter(order -> order.getOrderStatus().equals(OrderStatus.VALID_BUT_NOT_DELIVERED))
                 .toArray(Order[]::new);
     }
 }
