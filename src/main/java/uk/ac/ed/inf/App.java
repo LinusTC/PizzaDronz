@@ -1,7 +1,6 @@
 package uk.ac.ed.inf;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.cglib.core.Local;
 import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.ilp.data.Pizza;
@@ -19,7 +18,6 @@ public class App
 
         Restaurant[] restaurants = restaurantsData();
 
-        /*
         System.out.println(getCentralAreaData().name());
         for (LngLat vertex: getCentralAreaData().vertices()){
             System.out.print(vertex);
@@ -82,22 +80,21 @@ public class App
         LocalDate date = LocalDate.of(2023,9,1);
         Order[] ordersOnDate = getOrdersOnDay(date);
 
-        for (Order order: ordersOnDate){
-            System.out.println("Pizzas Number:" + order.getOrderNo());
-            System.out.println("Pizzas Date:" + order.getOrderDate());
-            System.out.println("Pizzas Status:" + order.getOrderStatus());
-            System.out.println("Pizzas Validation Code:" + order.getOrderValidationCode());
-            System.out.println("Pizzas Price:" + order.getPriceTotalInPence());
-            System.out.println("Pizzas include:" + Arrays.toString(order.getPizzasInOrder()));
-            System.out.println("Credit Card Number:" + order.getCreditCardInformation().getCreditCardNumber());
-            System.out.println("Credit Card CVV:" + order.getCreditCardInformation().getCvv());
-            System.out.println("Credit Card Expiry Date:" + order.getCreditCardInformation().getCreditCardExpiry());
+        for (Order orders: ordersOnDate){
+            System.out.println("Pizzas Number:" + orders.getOrderNo());
+            System.out.println("Pizzas Date:" + orders.getOrderDate());
+            System.out.println("Pizzas Status:" + orders.getOrderStatus());
+            System.out.println("Pizzas Validation Code:" + orders.getOrderValidationCode());
+            System.out.println("Pizzas Price:" + orders.getPriceTotalInPence());
+            System.out.println("Pizzas include:" + Arrays.toString(orders.getPizzasInOrder()));
+            System.out.println("Credit Card Number:" + orders.getCreditCardInformation().getCreditCardNumber());
+            System.out.println("Credit Card CVV:" + orders.getCreditCardInformation().getCvv());
+            System.out.println("Credit Card Expiry Date:" + orders.getCreditCardInformation().getCreditCardExpiry());
             System.out.println();
         }
 
         System.out.println(ordersOnDate.length);
 
-         */
     }
 
 }
