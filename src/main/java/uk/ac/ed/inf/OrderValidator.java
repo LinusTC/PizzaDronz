@@ -74,7 +74,7 @@ public class OrderValidator implements OrderValidation {
     }
 
     //This is Luhn's algorithm to check credit card number validity
-    static boolean checkLuhn(String cardNum){
+    public static boolean checkLuhn(String cardNum){
         int digits = cardNum.length();
 
         if (digits == 0){
@@ -100,7 +100,7 @@ public class OrderValidator implements OrderValidation {
     }
 
     //check expiration date validity
-    static boolean validExpirationDate (String expDate) {
+    public static boolean validExpirationDate (String expDate) {
 
         if (expDate == null){
             return false;
@@ -132,7 +132,7 @@ public class OrderValidator implements OrderValidation {
     }
 
     //Check CVV validity
-    static boolean isCVVValid (String cvv){
+    public static boolean isCVVValid (String cvv){
         String regex = "^[0-9]{3}$";
 
         Pattern p = Pattern.compile(regex);
@@ -147,7 +147,7 @@ public class OrderValidator implements OrderValidation {
     }
 
     //Check if price total is accurate
-    static boolean totalAccurate (Order order){
+    public static boolean totalAccurate (Order order){
 
         int customerTotal = order.getPriceTotalInPence();
         int deliveryFee = 100;
@@ -161,12 +161,12 @@ public class OrderValidator implements OrderValidation {
     }
 
     //Check number of pizzas is valid
-    static boolean validPizzaCount (Order order){
+    public static boolean validPizzaCount (Order order){
         return order.getPizzasInOrder().length >= 1 && order.getPizzasInOrder().length <= 4;
     }
 
     //Find which restaurant a pizza is from
-    static Restaurant findPizzaRestaurant(Pizza pizza, Restaurant[] definedRestaurants){
+    public static Restaurant findPizzaRestaurant(Pizza pizza, Restaurant[] definedRestaurants){
         for (Restaurant restaurant: definedRestaurants){
             for(Pizza menuPizza: restaurant.menu()){
                 if(menuPizza.name().equals(pizza.name())){
@@ -178,7 +178,7 @@ public class OrderValidator implements OrderValidation {
     }
 
     //Check if all pizzas are defined
-    static boolean validPizzas (Order order, Restaurant[] definedRestaurants){
+    public static boolean validPizzas (Order order, Restaurant[] definedRestaurants){
 
         Pizza[] pizzas  = order.getPizzasInOrder();
 
@@ -194,7 +194,7 @@ public class OrderValidator implements OrderValidation {
     }
 
     //Check if all pizzas are from the same restaurant
-    static boolean fromSameRestaurant (Order order, Restaurant[] definedRestaurants){
+    public static boolean fromSameRestaurant (Order order, Restaurant[] definedRestaurants){
 
         if (order.getPizzasInOrder().length == 1){
             return true;
@@ -217,7 +217,7 @@ public class OrderValidator implements OrderValidation {
     }
 
     //Check if restaurant is open on order day
-    static boolean restaurantIsOpen (Order order, Restaurant[] definedRestaurants){
+    public static boolean restaurantIsOpen (Order order, Restaurant[] definedRestaurants){
 
         Pizza[] pizzas  = order.getPizzasInOrder();
 
