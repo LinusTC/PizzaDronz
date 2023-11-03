@@ -28,7 +28,7 @@ public class GetDataFromRest {
                 .block();
     }
 
-    public static Restaurant[] restaurantsData (){
+    public static Restaurant[] getRestaurantsData (){
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {

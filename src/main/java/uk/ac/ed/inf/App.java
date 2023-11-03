@@ -14,8 +14,8 @@ import static uk.ac.ed.inf.GetDataFromRest.*;
 public class App
 {
     public static void main( String[] args ){
-
-        Restaurant[] restaurants = restaurantsData();
+        /*
+        Restaurant[] restaurants = getRestaurantsData();
 
         //Test to get Central Area
         System.out.println(getCentralAreaData().name());
@@ -97,6 +97,7 @@ public class App
         System.out.println(handler.isCloseTo(sampleInCenter,new LngLat(sampleInCenter.lng() + 0.0002, sampleInCenter.lat())));
         System.out.println(handler.isInCentralArea(sampleInCenter, getCentralAreaData()));
         System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
+         */
 
         //Create Deliveries Json
         LocalDate date1 = LocalDate.of(2023,9,1);
