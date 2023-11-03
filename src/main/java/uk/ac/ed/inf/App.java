@@ -16,7 +16,7 @@ public class App
     public static void main( String[] args ){
 
         Restaurant[] restaurants = restaurantsData();
-
+        /*
         //Test to get Central Area
         System.out.println(getCentralAreaData().name());
         for (LngLat vertex: getCentralAreaData().vertices()){
@@ -83,6 +83,7 @@ public class App
             System.out.println("Credit Card Number:" + orders.getCreditCardInformation().getCreditCardNumber());
             System.out.println("Credit Card CVV:" + orders.getCreditCardInformation().getCvv());
             System.out.println("Credit Card Expiry Date:" + orders.getCreditCardInformation().getCreditCardExpiry());
+            System.out.println();
         }
         System.out.println("Number of Orders on " + date + " is: " + ordersOnDate.length);
         System.out.println();
@@ -97,6 +98,11 @@ public class App
         System.out.println(handler.isInCentralArea(sampleInCenter, getCentralAreaData()));
         System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
 
+        //Create Deliveries Json
+        LocalDate date = LocalDate.of(2023,9,1);
+        LocalDate date1 = LocalDate.of(2023,9,2);
+        CreateJsonDocuments.createDeliveries(date);
+        CreateJsonDocuments.createDeliveries(date1);
+        */
     }
-
 }
