@@ -97,12 +97,12 @@ public class App
         System.out.println(handler.isCloseTo(sampleInCenter,new LngLat(sampleInCenter.lng() + 0.0002, sampleInCenter.lat())));
         System.out.println(handler.isInCentralArea(sampleInCenter, getCentralAreaData()));
         System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
-         */
 
         //Create Deliveries Json
         LocalDate date1 = LocalDate.of(2023,9,1);
         LocalDate date2 = LocalDate.of(2023,9,2);
         CreateJsonDocuments.createDeliveries(date1);
         CreateJsonDocuments.createDeliveries(date2);
+         */
     }
 }
