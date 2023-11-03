@@ -8,6 +8,9 @@ import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.ilp.data.Restaurant;
 
+import java.time.LocalDate;
+import java.util.Arrays;
+
 public class GetDataFromRest {
     public static String getData (String url){
         WebClient.Builder builder = WebClient.builder();
@@ -44,5 +47,14 @@ public class GetDataFromRest {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         return objectMapper.readValue(getData("https://ilp-rest.azurewebsites.net/orders"), Order[].class);
+    }
+
+    public  static Order[] getOrdersOnDay (LocalDate date) throws JsonProcessingException {
+
+        Order[] orders = getOrderData();
+
+        return Arrays.stream(orders)
+                .filter(order -> order.getOrderDate().equals(date))
+                .toArray(Order[]::new);
     }
 }

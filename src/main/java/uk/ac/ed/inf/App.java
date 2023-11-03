@@ -1,11 +1,13 @@
 package uk.ac.ed.inf;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.cglib.core.Local;
 import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.ilp.data.Pizza;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.Arrays;
 import uk.ac.ed.inf.ilp.data.Restaurant;
 import static uk.ac.ed.inf.GetDataFromRest.*;
@@ -16,6 +18,8 @@ public class App
     public static void main( String[] args ) throws JsonProcessingException {
 
         Restaurant[] restaurants = restaurantsData();
+
+        /*
         System.out.println(getCentralAreaData().name());
         for (LngLat vertex: getCentralAreaData().vertices()){
             System.out.print(vertex);
@@ -75,6 +79,25 @@ public class App
         System.out.println(handler.isInCentralArea(sampleInCenter, getCentralAreaData()));
         System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
 
+        LocalDate date = LocalDate.of(2023,9,1);
+        Order[] ordersOnDate = getOrdersOnDay(date);
+
+        for (Order order: ordersOnDate){
+            System.out.println("Pizzas Number:" + order.getOrderNo());
+            System.out.println("Pizzas Date:" + order.getOrderDate());
+            System.out.println("Pizzas Status:" + order.getOrderStatus());
+            System.out.println("Pizzas Validation Code:" + order.getOrderValidationCode());
+            System.out.println("Pizzas Price:" + order.getPriceTotalInPence());
+            System.out.println("Pizzas include:" + Arrays.toString(order.getPizzasInOrder()));
+            System.out.println("Credit Card Number:" + order.getCreditCardInformation().getCreditCardNumber());
+            System.out.println("Credit Card CVV:" + order.getCreditCardInformation().getCvv());
+            System.out.println("Credit Card Expiry Date:" + order.getCreditCardInformation().getCreditCardExpiry());
+            System.out.println();
+        }
+
+        System.out.println(ordersOnDate.length);
+
+         */
     }
 
 }
