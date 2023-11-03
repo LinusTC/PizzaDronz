@@ -8,7 +8,7 @@ import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.ilp.data.Restaurant;
 
-public class GetRest {
+public class GetDataFromRest {
     public static String getData (String url){
         WebClient.Builder builder = WebClient.builder();
 

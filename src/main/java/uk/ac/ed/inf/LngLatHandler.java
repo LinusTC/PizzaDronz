@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.interfaces.LngLatHandling;
-import static uk.ac.ed.inf.GetRest.*;
+import static uk.ac.ed.inf.GetDataFromRest.*;
 
 public class LngLatHandler implements LngLatHandling{
 
