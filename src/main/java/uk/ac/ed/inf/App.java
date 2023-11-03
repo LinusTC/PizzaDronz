@@ -16,7 +16,7 @@ public class App
     public static void main( String[] args ){
 
         Restaurant[] restaurants = restaurantsData();
-        /*
+
         //Test to get Central Area
         System.out.println(getCentralAreaData().name());
         for (LngLat vertex: getCentralAreaData().vertices()){
@@ -99,10 +99,9 @@ public class App
         System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
 
         //Create Deliveries Json
-        LocalDate date = LocalDate.of(2023,9,1);
-        LocalDate date1 = LocalDate.of(2023,9,2);
-        CreateJsonDocuments.createDeliveries(date);
+        LocalDate date1 = LocalDate.of(2023,9,1);
+        LocalDate date2 = LocalDate.of(2023,9,2);
         CreateJsonDocuments.createDeliveries(date1);
-        */
+        CreateJsonDocuments.createDeliveries(date2);
     }
 }
