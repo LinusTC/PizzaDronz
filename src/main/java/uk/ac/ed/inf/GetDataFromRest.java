@@ -12,7 +12,12 @@ import java.time.LocalDate;
 import java.util.Arrays;
 
 public class GetDataFromRest {
-    private static final String BASE_URL = "https://ilp-rest.azurewebsites.net";
+    private static String baseURL = "https://ilp-rest.azurewebsites.net";
+
+    public static void setBaseUrl(String baseUrl) {
+        baseURL = baseUrl;
+    }
+
     public static String getData (String path){
         WebClient.Builder builder = WebClient.builder();
 
@@ -22,7 +27,7 @@ public class GetDataFromRest {
                         .maxInMemorySize(10 * 1024 * 1024))
                 .build()
                 .get()
-                .uri(BASE_URL + path)
+                .uri(baseURL + path)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();

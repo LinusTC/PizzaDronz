@@ -6,17 +6,18 @@ import java.time.format.DateTimeFormatter;
 public class App
 {
     public static void main(String[] args){
+        System.out.println("Hello World");
 
         String date = args[0];
         String url = args[1];
 
-        if(!validURL(url)){
-            System.out.println("Invalid URL. Use https://ilp-rest.azurewebsites.net.");
+        if (!validDate(date)){
+            System.out.println("Invalid date format. Please use the format 'yyyy-MM-dd'.");
             System.exit(0);
         }
 
-        if (!validDate(date)){
-            System.out.println("Invalid date format. Please use the format 'yyyy-MM-dd'.");
+        if(!validURL(url)){
+            System.out.println("Invalid URL. Use https://ilp-rest.azurewebsites.net.");
             System.exit(0);
         }
 
@@ -24,8 +25,7 @@ public class App
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate localDate = LocalDate.parse(date, formatter);
 
-            System.out.println(localDate);
-            System.out.println(url);
+            GetDataFromRest.setBaseUrl(url);
 
         }
 
