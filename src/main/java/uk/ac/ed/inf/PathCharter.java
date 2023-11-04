@@ -5,6 +5,8 @@ import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.ilp.data.Restaurant;
 
+import java.util.Objects;
+
 public class PathCharter {
     public static LngLat appleton = new LngLat(-3.186874, 55.944494);
     //Get Central
@@ -16,14 +18,17 @@ public class PathCharter {
         return null;
     }
 
-    public static LngLat[] shortestValidPath (Restaurant restaurant){
+    public static LngLat[] shortestValidPath (Order validOrder){
 
-        if (new LngLatHandler().isInCentralArea(restaurant.location(), central)){
+        Restaurant orderRestaurant = OrderValidator.findPizzaRestaurant(validOrder.getPizzasInOrder()[0], GetDataFromRest.getRestaurantsData());
+
+        //Only valid orders will call this method
+        if (new LngLatHandler().isInCentralArea(Objects.requireNonNull(orderRestaurant).location(), central)){
 
         }
 
         else{
-            LngLat edge = closestEdge(restaurant.location());
+            LngLat edge = closestEdge(orderRestaurant.location());
         }
         return null;
     }
