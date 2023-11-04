@@ -35,7 +35,7 @@ public class GetDataFromRest {
 
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
-                    char[] buffer = new char[1024*1024];
+                    char[] buffer = new char[1024*1024*8];
                     int bytesRead;
                     while ((bytesRead = reader.read(buffer)) != -1) {
                         sb.append(buffer, 0, bytesRead);

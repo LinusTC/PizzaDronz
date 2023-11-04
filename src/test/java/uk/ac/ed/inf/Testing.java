@@ -69,7 +69,7 @@ public class Testing {
         System.out.println();
 
         //Test to get all orders/validOrders on specific date
-        LocalDate date = LocalDate.of(202,9,1);
+        LocalDate date = LocalDate.of(2023,9,1);
         Order[] ordersOnDate = getOrdersOnDay(date);
         Order[] validOrdersOnDate = getValidOrdersOnDay(date);
         for (Order orders: ordersOnDate){
