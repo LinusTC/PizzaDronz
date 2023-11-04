@@ -33,6 +33,10 @@ public class PathCharter {
         return null;
     }
 
+    public static LngLat[] aStarAlg (LngLat start, LngLat end){
+        return null;
+    }
+
     public static Move nextMove(int orderNo,LngLat start, LngLat end){
         double lngDiff = end.lng() - start.lng();
         double latDiff = end.lat() - start.lat();
