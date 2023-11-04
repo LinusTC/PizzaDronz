@@ -1,19 +1,54 @@
 package uk.ac.ed.inf;
 
 import uk.ac.ed.inf.ilp.data.LngLat;
+import uk.ac.ed.inf.ilp.data.NamedRegion;
+import uk.ac.ed.inf.ilp.data.Order;
+import uk.ac.ed.inf.ilp.data.Restaurant;
 
 public class PathCharter {
-    public static LngLat closestEdge (LngLat startingPoint){
+    public static LngLat appleton = new LngLat(-3.186874, 55.944494);
+    //Get Central
+    public static NamedRegion central = GetDataFromRest.getCentralAreaData();
+    //Get noFlyZones from rest
+    public static NamedRegion[] noFlyZones = GetDataFromRest.getNoFlyZones();
 
-        //Check if starting point is already in central
-        if(new LngLatHandler().isInCentralArea(startingPoint,GetDataFromRest.getCentralAreaData())){
-            return startingPoint;
+    public static Move[] totalMovesPerOrder(Order order){
+        return null;
+    }
+
+    public static LngLat[] shortestValidPath (Restaurant restaurant){
+
+        if (new LngLatHandler().isInCentralArea(restaurant.location(), central)){
+
         }
 
-        double closestX, closestY;
+        else{
+            LngLat edge = closestEdge(restaurant.location());
+        }
+        return null;
+    }
 
-        double x = startingPoint.lng();
-        double y = startingPoint.lat();
+    public static Move nextMove(int orderNo,LngLat start, LngLat end){
+        double lngDiff = end.lng() - start.lng();
+        double latDiff = end.lat() - start.lat();
+        double angle = Math.atan2(latDiff, lngDiff);
+
+        double moveAngle = Math.toRadians(Math.round(Math.toDegrees(angle) / 16) * 16);
+
+        LngLat nextPosition = new LngLatHandler().nextPosition(start, moveAngle);
+
+        return new Move(orderNo, start, nextPosition);
+    }
+
+    public static LngLat closestEdge (LngLat restaurantLocation){
+
+        //Check if starting point is already in central
+        if(new LngLatHandler().isInCentralArea(restaurantLocation,GetDataFromRest.getCentralAreaData())){
+            return restaurantLocation;
+        }
+
+        double x = restaurantLocation.lng();
+        double y = restaurantLocation.lat();
 
         //Using the following code to find max/min lng-lat values.
         LngLat[] vertices = GetDataFromRest.getCentralAreaData().vertices();
@@ -23,30 +58,9 @@ public class PathCharter {
         double yMax = vertices[0].lat();
 
         //Finds the closest point on central box
-        if (x < xMin){
-            closestX = xMin;
-            if(y < yMin){
-                closestY = yMin;
-            }
-            else closestY = Math.min(y, yMax);
-        }
-        else if (x <= xMax) {
-            closestX = x;
-            if(y < yMin){
-                closestY = yMin;
-            }
-            else{
-                closestY = yMax;
-            }
-        }
-        else{
-            closestX = xMax;
-            if(y < yMin){
-                closestY = yMin;
-            }
-            else closestY = Math.min(y, yMax);
+        double closestX = Math.min(Math.max(x, xMin), xMax);
+        double closestY = Math.min(Math.max(y, yMin), yMax);
 
-        }
         return new LngLat(closestX,closestY);
     }
 }
