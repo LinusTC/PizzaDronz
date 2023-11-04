@@ -15,11 +15,11 @@ public class CreateJsonDocuments {
 
     }
 
-    public static void createFlightPath () {
+    public static void createFlightPath (LocalDate date) {
 
     }
 
-    public static void createDrone () {
+    public static void createDrone (LocalDate date) {
 
     }
 }
