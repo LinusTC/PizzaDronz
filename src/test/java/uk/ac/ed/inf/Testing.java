@@ -11,6 +11,8 @@ import static uk.ac.ed.inf.GetDataFromRest.getCentralAreaData;
 
 public class Testing {
     public static void main( String[] args ){
+        GetDataFromRest.setBaseUrl("https://ilp-rest.azurewebsites.net");
+
         Restaurant[] restaurants = getRestaurantsData();
 
         //Test to get Central Area

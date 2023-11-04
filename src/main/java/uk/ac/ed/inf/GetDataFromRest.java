@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 
 public class GetDataFromRest {
-    private static String baseURL = "https://ilp-rest.azurewebsites.net";
+    private static String baseURL;
 
     public static void setBaseUrl(String baseUrl) {
         baseURL = baseUrl;
