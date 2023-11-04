@@ -3,11 +3,18 @@ package uk.ac.ed.inf;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.web.reactive.function.client.WebClient;
+
 import uk.ac.ed.inf.ilp.constant.OrderStatus;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.ilp.data.Restaurant;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Arrays;
 
@@ -18,19 +25,31 @@ public class GetDataFromRest {
         baseURL = baseUrl;
     }
 
-    public static String getData (String path){
-        WebClient.Builder builder = WebClient.builder();
+    public static String getData(String path) {
+        StringBuilder sb = new StringBuilder();
 
-        return builder
-                .codecs(codecs -> codecs
-                        .defaultCodecs()
-                        .maxInMemorySize(10 * 1024 * 1024))
-                .build()
-                .get()
-                .uri(baseURL + path)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+        try {
+            URL url = new URL(baseURL + path);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
+                    char[] buffer = new char[1024*1024];
+                    int bytesRead;
+                    while ((bytesRead = reader.read(buffer)) != -1) {
+                        sb.append(buffer, 0, bytesRead);
+                    }
+                }
+            } else {
+                // Handle HTTP error, if necessary
+                throw new IOException("HTTP error: " + connection.getResponseCode());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return sb.toString();
     }
 
     public static Restaurant[] getRestaurantsData (){
