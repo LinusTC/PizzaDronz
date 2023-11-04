@@ -16,7 +16,6 @@ public class CreateJsonDocuments {
         JSONArray orders = new JSONArray();
 
         for (Order order : ordersOnDate) {
-            new OrderValidator().validateOrder(order, getRestaurantsData());
             JSONObject jsonObject = new JSONObject();
 
             jsonObject.put("orderNo", order.getOrderNo());
