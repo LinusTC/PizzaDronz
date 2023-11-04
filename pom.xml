@@ -38,5 +38,12 @@
       <artifactId>json</artifactId>
       <version>20231013</version>
     </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <scope>system</scope>
+      <version>2.15.1</version>
+      <systemPath>${project.basedir}/libraries/IlpDataObjects.jar</systemPath>
+    </dependency>
   </dependencies>
 </project>
