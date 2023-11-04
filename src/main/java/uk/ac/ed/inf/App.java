@@ -25,11 +25,11 @@ public class App
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate localDate = LocalDate.parse(date, formatter);
 
-            GetDataFromRest.setBaseUrl(url);
-
         }
 
     }
+
+    //Check if input date is valid
     public static boolean validDate (String date){
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -40,7 +40,13 @@ public class App
         }
     }
 
-    public static boolean validURL (String URL){
-        return URL.equals("https://ilp-rest.azurewebsites.net");
+    //Check if we can get all the data we need from the provided URL
+    public static boolean validURL (String url){
+        GetDataFromRest.setBaseUrl(url);
+
+        return GetDataFromRest.getRestaurantsData() != null
+                && GetDataFromRest.getNoFlyZones() != null
+                && GetDataFromRest.getCentralAreaData() != null
+                && GetDataFromRest.getOrderData() != null;
     }
 }
