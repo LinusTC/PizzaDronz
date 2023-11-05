@@ -51,12 +51,15 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>3.0.2</version>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.6.0</version>
         <configuration>
+          <appendAssemblyId>false</appendAssemblyId>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
           <archive>
             <manifest>
-              <addClasspath>true</addClasspath>
               <mainClass>uk.ac.ed.inf.App</mainClass>
             </manifest>
           </archive>
