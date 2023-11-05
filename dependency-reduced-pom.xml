@@ -48,6 +48,13 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>com.sample1</groupId>
+      <artifactId>sample1</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/libraries/IlpDataObjects.jar</systemPath>
+    </dependency>
   </dependencies>
   <properties>
     <maven.compiler.target>18</maven.compiler.target>
