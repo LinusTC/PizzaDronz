@@ -25,6 +25,7 @@ public class GetDataFromRest {
         baseURL = baseUrl;
     }
 
+    //Get data as string, use ObjectMapper later to map the strings.
     public static String getData(String path) {
         StringBuilder sb = new StringBuilder();
 
