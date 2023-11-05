@@ -1,5 +1,8 @@
 package uk.ac.ed.inf;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -24,7 +27,7 @@ public class App
         else {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate localDate = LocalDate.parse(date, formatter);
-
+            GetDataFromRest.setBaseUrl(url);
         }
 
     }
@@ -41,12 +44,24 @@ public class App
     }
 
     //Check if we can get all the data we need from the provided URL
-    public static boolean validURL (String url){
-        GetDataFromRest.setBaseUrl(url);
+    public static boolean validURL (String baseURL){
+        try {
 
-        return GetDataFromRest.getRestaurantsData() != null
-                && GetDataFromRest.getNoFlyZones() != null
-                && GetDataFromRest.getCentralAreaData() != null
-                && GetDataFromRest.getOrderData() != null;
+            String[] paths = new String[]{"/restaurants", "/centralArea", "/noFlyZones", "/orders"};
+
+            for (String path: paths){
+                URL url = new URL(baseURL + path);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+
+                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    return false;
+                }
+            }
+            return true;
+
+        } catch (IOException e) {
+            return false;
+        }
     }
 }
