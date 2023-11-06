@@ -1,14 +1,11 @@
 package uk.ac.ed.inf;
 
 import uk.ac.ed.inf.ilp.data.*;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Arrays;
-
 import static uk.ac.ed.inf.GetDataFromRest.*;
 import static uk.ac.ed.inf.GetDataFromRest.getCentralAreaData;
-import static uk.ac.ed.inf.LngLatHandler.round;
 
 public class Testing {
     public static void main( String[] args ){
