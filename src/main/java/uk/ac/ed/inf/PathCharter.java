@@ -7,8 +7,6 @@ import uk.ac.ed.inf.ilp.data.Restaurant;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static uk.ac.ed.inf.LngLatHandler.*;
-
 public class PathCharter {
     public static LngLat appleton = new LngLat(-3.186874, 55.944494);
     //Get Central
