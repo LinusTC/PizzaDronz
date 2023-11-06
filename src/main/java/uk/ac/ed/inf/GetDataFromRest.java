@@ -26,7 +26,7 @@ public class GetDataFromRest {
     }
 
     //Get data as string, use ObjectMapper later to map the strings.
-    public static String getData(String path) {
+    private static String getData(String path) {
         StringBuilder sb = new StringBuilder();
 
         try {
@@ -55,12 +55,12 @@ public class GetDataFromRest {
 
     public static Restaurant[] getRestaurantsData (){
         ObjectMapper objectMapper = new ObjectMapper();
-
         try {
             return objectMapper.readValue(getData("/restaurants"), Restaurant[].class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     public static NamedRegion getCentralAreaData (){
