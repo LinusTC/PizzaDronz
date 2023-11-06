@@ -5,7 +5,11 @@ import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.ilp.data.Restaurant;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
+
+import static uk.ac.ed.inf.LngLatHandler.round;
 
 public class PathCharter {
     public static LngLat appleton = new LngLat(-3.186874, 55.944494);
@@ -41,29 +45,38 @@ public class PathCharter {
         List<Node> openList = new ArrayList<>();
         List<Node> closedList = new ArrayList<>();
 
-        Node startNode = new Node(start, null, 0, startEnd, 0);
-        Node endNode = new Node(end, null, 0, 0, 0);
+        Node startNode = new Node(start, null, 0);
+        Node endNode = new Node(end, null, 0);
 
         openList.add(startNode);
+
+        for (NamedRegion noFlyZone : noFlyZones) {
+            if (handler.isInRegion(end, noFlyZone)) {
+                return null;
+            }
+        }
 
         while (!openList.isEmpty()){
 
             //Find the node in openList with the least cost
             Node currentNode = openList.get(0);
             int currentIndex = 0;
-            for (int index = 0; index < openList.size(); index++) {
-                Node item = openList.get(index);
+            for (int i = 0; i < openList.size(); i++) {
+                Node item = openList.get(i);
 
-                if (item.totalCost() < currentNode.totalCost()) {
+                if (item.heuristics() < currentNode.heuristics()) {
                     currentNode = item;
-                    currentIndex = index;
+                    currentIndex = i;
                 }
+                System.out.println(i);
             }
             openList.remove(currentIndex);
             closedList.add(currentNode);
 
             //If endNode was found, build a path back to the start.
-            if (currentNode.equals(endNode)){
+            double dx = round(Math.abs(currentNode.location().lng() - endNode.location().lng()));
+            double dy = round(Math.abs(currentNode.location().lat() - endNode.location().lat()));
+            if (dx < 0.00015 && dy < 0.00015){
                 List<LngLat> path = new ArrayList<>();
                 Node temp = currentNode;
 
@@ -79,39 +92,33 @@ public class PathCharter {
             //Create a childNodes list
             List<Node> childNodes = new ArrayList<>();
             for (int i = 0; i < 16; i++){
-                System.out.print("hello ");
                 //Location of child
                 LngLat parentLocation = currentNode.location();
                 LngLat childLocation = handler.nextPosition(parentLocation, 22.5*i);
-
-                //Distance of child from start
-                double childDistanceFromStart = currentNode.distanceFromStart() + 0.00015;
 
                 //Heuristics
                 double heuristics = handler.distanceTo(childLocation, end);
 
                 //Check if inNoFlyZone
                 boolean inNoFlyZone = false;
-                NamedRegion[] noFlyZones = GetDataFromRest.getNoFlyZones();
                 for (NamedRegion noFlyZone : noFlyZones) {
                     if (handler.isInRegion(childLocation, noFlyZone)) {
                         inNoFlyZone = true;
                         break;
                     }
                 }
+                if (!isPathClear(parentLocation, childLocation, noFlyZones)){
+                    inNoFlyZone = true;
+                }
                 if (inNoFlyZone) {
                     continue;
                 }
 
-                //Total Cost
-                double totalCost = childDistanceFromStart + heuristics;
-
-                Node tempChildNode = new Node(childLocation, currentNode, childDistanceFromStart, heuristics, totalCost);
+                Node tempChildNode = new Node(childLocation, currentNode, heuristics);
                 childNodes.add(tempChildNode);
             }
 
             for (Node childNode: childNodes){
-                System.out.print("hello 2");
                 //Check if childNode is already in closedList
                 boolean inClosedList = false;
                 for(Node closedNode: closedList){
@@ -141,10 +148,32 @@ public class PathCharter {
         return null;
     }
 
+    public static boolean isPathClear(LngLat start, LngLat end, NamedRegion[] noFlyZones) {
+        LngLatHandler handler = new LngLatHandler();
+        double stepSize = 0.00001;
+
+        double distance = handler.distanceTo(start, end);
+
+        double stepX = (end.lng() - start.lng()) / distance * stepSize;
+        double stepY = (end.lat() - start.lat()) / distance * stepSize;
+
+        LngLat currentPoint = new LngLat(start.lng(), start.lat());
+        while (handler.distanceTo(currentPoint, end) > stepSize) {
+            for (NamedRegion noFlyZone : noFlyZones) {
+                if (handler.isInRegion(currentPoint, noFlyZone)) {
+                    return false;
+                }
+            }
+            currentPoint = new LngLat(currentPoint.lng() + stepX, currentPoint.lat() + stepY);
+        }
+        return true;
+    }
+
+
     public static LngLat closestEdge (LngLat restaurantLocation){
 
         //Check if starting point is already in central
-        if(new LngLatHandler().isInCentralArea(restaurantLocation,GetDataFromRest.getCentralAreaData())){
+        if(new LngLatHandler().isInCentralArea(restaurantLocation,central)){
             return restaurantLocation;
         }
 
@@ -152,16 +181,17 @@ public class PathCharter {
         double y = restaurantLocation.lat();
 
         //Using the following code to find max/min lng-lat values.
-        LngLat[] vertices = GetDataFromRest.getCentralAreaData().vertices();
+        LngLat[] vertices = central.vertices();
         double xMin = vertices[0].lng();
         double xMax = vertices[2].lng();
         double yMin = vertices[2].lat();
         double yMax = vertices[0].lat();
 
         //Finds the closest point on central box
-        double closestX = Math.min(Math.max(x, xMin), xMax);
-        double closestY = Math.min(Math.max(y, yMin), yMax);
+        double closestX = round(Math.min(Math.max(x, xMin), xMax));
+        double closestY = round(Math.min(Math.max(y, yMin), yMax));
 
         return new LngLat(closestX,closestY);
     }
+
 }

@@ -70,8 +70,8 @@ public class LngLatHandler implements LngLatHandling{
 
 
         for(int k = 0; k < numVertices;k++){
-            xVertices[k] = round(vertices[k].lng());
-            yVertices[k] = round(vertices[k].lat());
+            xVertices[k] = vertices[k].lng();
+            yVertices[k] = vertices[k].lat();
         }
 
         for (int i = 0, j = numVertices - 1; i < numVertices; j = i++) {

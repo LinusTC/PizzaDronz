@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 import static uk.ac.ed.inf.GetDataFromRest.*;
 import static uk.ac.ed.inf.GetDataFromRest.getCentralAreaData;
+import static uk.ac.ed.inf.LngLatHandler.round;
 
 public class Testing {
     public static void main( String[] args ){
@@ -99,10 +100,13 @@ public class Testing {
         System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
          */
 
-        LngLat appleton = new LngLat(-3.186874, 55.944494);
-        LngLat restaurant1 = GetDataFromRest.getRestaurantsData()[0].location();
-        LngLat[] path = PathCharter.aStarAlg(appleton, restaurant1);
+        LngLat appleton = new LngLat(-3.18687, 55.94449);
+        LngLat nullLocation = new LngLat(-3.1924753459052795, 55.94263247370975);
+        LngLat[] path = PathCharter.aStarAlg(appleton, nullLocation);
 
-        System.out.println(Arrays.toString(path));
+        for(LngLat lngLat: path){
+            System.out.println("[" + lngLat.lng()+ "," + lngLat.lat()+ "],");
+        }
     }
 }
+
