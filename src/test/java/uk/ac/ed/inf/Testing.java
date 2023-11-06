@@ -15,6 +15,7 @@ public class Testing {
 
         Restaurant[] restaurants = getRestaurantsData();
 
+        /*
         //Test to get Central Area
         System.out.println(getCentralAreaData().name());
         for (LngLat vertex: getCentralAreaData().vertices()){
@@ -96,6 +97,12 @@ public class Testing {
         System.out.println(handler.isCloseTo(sampleInCenter,new LngLat(sampleInCenter.lng() + 0.0002, sampleInCenter.lat())));
         System.out.println(handler.isInCentralArea(sampleInCenter, getCentralAreaData()));
         System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
+         */
 
+        LngLat appleton = new LngLat(-3.186874, 55.944494);
+        LngLat restaurant1 = GetDataFromRest.getRestaurantsData()[0].location();
+        LngLat[] path = PathCharter.aStarAlg(appleton, restaurant1);
+
+        System.out.println(Arrays.toString(path));
     }
 }
