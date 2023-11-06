@@ -95,13 +95,13 @@ public class Testing {
         System.out.println(handler.isCloseTo(sampleInCenter,new LngLat(sampleInCenter.lng() + 0.0002, sampleInCenter.lat())));
         System.out.println(handler.isInCentralArea(sampleInCenter, getCentralAreaData()));
         System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
-         */
 
         Order order = getOrderData()[2];
         LngLat[] path = PathCharter.pathFromAT(order);
         for(LngLat lngLat: path){
             System.out.println("[" + lngLat.lng()+ "," + lngLat.lat()+ "],");
         }
+        */
     }
 }
 
