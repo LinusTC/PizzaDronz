@@ -100,10 +100,8 @@ public class Testing {
         System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
          */
 
-        LngLat appleton = new LngLat(-3.18687, 55.94449);
-        LngLat nullLocation = new LngLat(-3.1839, 55.9445);
-        LngLat[] path = PathCharter.aStarAlg(appleton, nullLocation);
-
+        Order order = getOrderData()[2];
+        LngLat[] path = PathCharter.pathFromAT(order);
         for(LngLat lngLat: path){
             System.out.println("[" + lngLat.lng()+ "," + lngLat.lat()+ "],");
         }

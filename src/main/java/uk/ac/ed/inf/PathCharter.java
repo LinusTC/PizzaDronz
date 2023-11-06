@@ -4,12 +4,10 @@ import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.ilp.data.Restaurant;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
+import java.util.stream.Stream;
 
-import static uk.ac.ed.inf.LngLatHandler.round;
+import static uk.ac.ed.inf.LngLatHandler.*;
 
 public class PathCharter {
     public static LngLat appleton = new LngLat(-3.186874, 55.944494);
@@ -18,28 +16,35 @@ public class PathCharter {
     //Get noFlyZones from rest
     public static NamedRegion[] noFlyZones = GetDataFromRest.getNoFlyZones();
 
+    public static LngLatHandler handler = new LngLatHandler();
+
     public static Move[] totalMovesPerOrder(Order order){
         return null;
     }
 
-    public static LngLat[] shortestValidPath (Order validOrder){
+    public static LngLat[] pathFromAT (Order validOrder){
 
         Restaurant orderRestaurant = OrderValidator.findPizzaRestaurant(validOrder.getPizzasInOrder()[0], GetDataFromRest.getRestaurantsData());
 
-        //Only valid orders will call this method
-        if (new LngLatHandler().isInCentralArea(Objects.requireNonNull(orderRestaurant).location(), central)){
-
+        if (handler.isInCentralArea(Objects.requireNonNull(orderRestaurant).location(), central)){
+            return modAStarAlg(appleton, orderRestaurant.location());
         }
 
         else{
             LngLat edge = closestEdge(orderRestaurant.location());
+            LngLat[] pt1 = modAStarAlg(appleton,edge);
+            LngLat[] pt2 = modAStarAlg(edge, orderRestaurant.location());
+
+            if (pt1 != null) {
+                if (pt2 != null) {
+                    return Stream.concat(Arrays.stream(pt1), Arrays.stream(pt2)).toArray(LngLat[]::new);
+                }
+            }
+            return null;
         }
-        return null;
     }
 
-    public static LngLat[] aStarAlg (LngLat start, LngLat end){
-
-        LngLatHandler handler = new LngLatHandler();
+    public static LngLat[] modAStarAlg (LngLat start, LngLat end){
 
         double startEnd = handler.distanceTo(start, end);
         List<Node> openList = new ArrayList<>();
@@ -68,7 +73,6 @@ public class PathCharter {
                     currentNode = item;
                     currentIndex = i;
                 }
-                System.out.println(i);
             }
             openList.remove(currentIndex);
             closedList.add(currentNode);
@@ -149,7 +153,6 @@ public class PathCharter {
     }
 
     public static boolean isPathClear(LngLat start, LngLat end, NamedRegion[] noFlyZones) {
-        LngLatHandler handler = new LngLatHandler();
         double stepSize = 0.00001;
 
         double distance = handler.distanceTo(start, end);
@@ -173,7 +176,7 @@ public class PathCharter {
     public static LngLat closestEdge (LngLat restaurantLocation){
 
         //Check if starting point is already in central
-        if(new LngLatHandler().isInCentralArea(restaurantLocation,central)){
+        if(handler.isInCentralArea(restaurantLocation,central)){
             return restaurantLocation;
         }
 
