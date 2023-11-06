@@ -6,9 +6,9 @@ public record Node(LngLat location, Node parent, double distanceFromStart, doubl
     public Node(LngLat location, Node parent, double distanceFromStart, double heuristics, double totalCost){
         this.location = location;
         this.parent = parent;
-        this.distanceFromStart = 0;
-        this.heuristics = 0;
-        this.totalCost = 0;
+        this.distanceFromStart = distanceFromStart;
+        this.heuristics = heuristics;
+        this.totalCost = totalCost;
     }
 
     public LngLat location(){
