@@ -3,6 +3,10 @@ package uk.ac.ed.inf;
 import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.interfaces.LngLatHandling;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import static uk.ac.ed.inf.GetDataFromRest.*;
 
 public class LngLatHandler implements LngLatHandling{
@@ -18,7 +22,7 @@ public class LngLatHandler implements LngLatHandling{
         double x = (x1-x2);
         double y = (y1-y2);
 
-        return Math.sqrt(x*x + y*y);
+        return round(Math.sqrt(x*x + y*y));
     }
 
     @Override
@@ -40,15 +44,9 @@ public class LngLatHandler implements LngLatHandling{
             return startPosition;
         }
 
-        double nextX = startPosition.lng() + (.00015 * Math.cos(Math.toRadians(angle)));
-        double nextY = startPosition.lat() + (.00015 * Math.sin(Math.toRadians(angle)));
+        double nextX = round(startPosition.lng() + (.00015 * Math.cos(Math.toRadians(angle))));
+        double nextY = round(startPosition.lat() + (.00015 * Math.sin(Math.toRadians(angle))));
 
-        if (Math.abs(nextX) < 1e-15) {
-            nextX = 0.0;
-        }
-        if (Math.abs(nextY) < 1e-15) {
-            nextY = 0.0;
-        }
         return new LngLat(nextX, nextY);
     }
 
@@ -59,7 +57,7 @@ public class LngLatHandler implements LngLatHandling{
 
 
     //Point in polygon algorithm found online
-    static boolean isPointInRegion(LngLat[] vertices, LngLat position ){
+    static boolean isPointInRegion(LngLat[] vertices, LngLat position){
         boolean temp = false;
 
         double x = position.lng();
@@ -72,8 +70,8 @@ public class LngLatHandler implements LngLatHandling{
 
 
         for(int k = 0; k < numVertices;k++){
-            xVertices[k] = vertices[k].lng();
-            yVertices[k] = vertices[k].lat();
+            xVertices[k] = round(vertices[k].lng());
+            yVertices[k] = round(vertices[k].lat());
         }
 
         for (int i = 0, j = numVertices - 1; i < numVertices; j = i++) {
@@ -83,5 +81,11 @@ public class LngLatHandler implements LngLatHandling{
             }
         }
         return temp;
+    }
+
+    public static double round(double value) {
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(5, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 }
