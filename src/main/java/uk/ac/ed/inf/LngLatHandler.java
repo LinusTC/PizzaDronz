@@ -22,7 +22,7 @@ public class LngLatHandler implements LngLatHandling{
         double x = (x1-x2);
         double y = (y1-y2);
 
-        return round(Math.sqrt(x*x + y*y));
+        return Math.sqrt(x*x + y*y);
     }
 
     @Override
@@ -44,8 +44,8 @@ public class LngLatHandler implements LngLatHandling{
             return startPosition;
         }
 
-        double nextX = round(startPosition.lng() + (.00015 * Math.cos(Math.toRadians(angle))));
-        double nextY = round(startPosition.lat() + (.00015 * Math.sin(Math.toRadians(angle))));
+        double nextX = startPosition.lng() + (.00015 * Math.cos(Math.toRadians(angle)));
+        double nextY = startPosition.lat() + (.00015 * Math.sin(Math.toRadians(angle)));
 
         return new LngLat(nextX, nextY);
     }
@@ -81,11 +81,5 @@ public class LngLatHandler implements LngLatHandling{
             }
         }
         return temp;
-    }
-
-    public static double round(double value) {
-        BigDecimal bd = BigDecimal.valueOf(value);
-        bd = bd.setScale(5, RoundingMode.HALF_UP);
-        return bd.doubleValue();
     }
 }
