@@ -46,7 +46,6 @@ public class PathCharter {
 
     public static LngLat[] modAStarAlg (LngLat start, LngLat end){
 
-        double startEnd = handler.distanceTo(start, end);
         List<Node> openList = new ArrayList<>();
         List<Node> closedList = new ArrayList<>();
 
