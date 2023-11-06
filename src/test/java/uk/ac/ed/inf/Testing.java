@@ -101,7 +101,7 @@ public class Testing {
          */
 
         LngLat appleton = new LngLat(-3.18687, 55.94449);
-        LngLat nullLocation = new LngLat(-3.1924753459052795, 55.94263247370975);
+        LngLat nullLocation = new LngLat(-3.1839, 55.9445);
         LngLat[] path = PathCharter.aStarAlg(appleton, nullLocation);
 
         for(LngLat lngLat: path){
