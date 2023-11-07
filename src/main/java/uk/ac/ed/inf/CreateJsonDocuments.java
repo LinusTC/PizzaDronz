@@ -35,8 +35,22 @@ public class CreateJsonDocuments {
         }
     }
 
-    public static void createFlightPath (LocalDate date, Order[] ordersOnDate) {
+    public static void createFlightPath (LocalDate date, Order[] validOrdersOnDate) {
         JSONArray movesOfOrders = new JSONArray();
+        Move[] path = PathCharter.totalMoves(validOrdersOnDate);
+
+        for(Move move: path){
+            JSONObject object = new JSONObject();
+
+            object.put("orderNo", move.orderNo());
+            object.put("fromLongitude", move.fromLng());
+            object.put("fromLatitude", move.fromLat());
+            object.put("angle", move.angle());
+            object.put("toLongitude", move.toLng());
+            object.put("toLatitude", move.toLat());
+
+            movesOfOrders.put(object);
+        }
 
         try {
             FileWriter file = new FileWriter(new File("resultfiles", "flightpath-" + date + ".json"));
