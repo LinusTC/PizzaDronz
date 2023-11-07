@@ -9,15 +9,4 @@ public record Move(int orderNo, LngLat startingPoint, LngLat endingPoint) {
         this.startingPoint = startingPoint;
         this.endingPoint = endingPoint;
     }
-    public int orderNo() {
-        return this.orderNo;
-    }
-
-    public LngLat startingPoint(){
-        return  this.startingPoint;
-    }
-
-    public LngLat endPoint(){
-        return  this.startingPoint;
-    }
 }

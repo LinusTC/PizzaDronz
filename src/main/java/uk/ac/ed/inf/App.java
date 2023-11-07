@@ -33,7 +33,7 @@ public class App
     }
 
     //Check if input date is valid
-    public static boolean validDate (String date){
+    private static boolean validDate (String date){
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate.parse(date, formatter);
@@ -44,7 +44,7 @@ public class App
     }
 
     //Check if we can get all the data we need from the provided URL
-    public static boolean validURL (String baseURL){
+    private static boolean validURL (String baseURL){
         try {
 
             String[] paths = new String[]{"/restaurants", "/centralArea", "/noFlyZones", "/orders"};

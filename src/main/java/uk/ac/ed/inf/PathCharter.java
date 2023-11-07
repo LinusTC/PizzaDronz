@@ -10,19 +10,19 @@ import java.util.stream.Stream;
 import static uk.ac.ed.inf.LngLatHandler.round;
 
 public class PathCharter {
-    public static LngLat appleton = new LngLat(-3.186874, 55.944494);
+    private static final LngLat appleton = new LngLat(-3.186874, 55.944494);
     //Get Central
-    public static NamedRegion central = GetDataFromRest.getCentralAreaData();
+    private static final NamedRegion central = GetDataFromRest.getCentralAreaData();
     //Get noFlyZones from rest
-    public static NamedRegion[] noFlyZones = GetDataFromRest.getNoFlyZones();
+    private static final NamedRegion[] noFlyZones = GetDataFromRest.getNoFlyZones();
 
-    public static LngLatHandler handler = new LngLatHandler();
+    private static final LngLatHandler handler = new LngLatHandler();
 
     public static Move[] totalMovesPerOrder(Order order){
         return null;
     }
 
-    public static LngLat[] pathFromAT (Order validOrder){
+    private static LngLat[] pathFromAT (Order validOrder){
 
         Restaurant orderRestaurant = OrderValidator.findPizzaRestaurant(validOrder.getPizzasInOrder()[0], GetDataFromRest.getRestaurantsData());
 
@@ -44,7 +44,7 @@ public class PathCharter {
         }
     }
 
-    public static LngLat[] modAStarAlg (LngLat start, LngLat end){
+    private static LngLat[] modAStarAlg (LngLat start, LngLat end){
 
         List<Node> openList = new ArrayList<>();
         List<Node> closedList = new ArrayList<>();
@@ -151,7 +151,7 @@ public class PathCharter {
         return null;
     }
 
-    public static boolean isPathClear(LngLat start, LngLat end, NamedRegion[] noFlyZones) {
+    private static boolean isPathClear(LngLat start, LngLat end, NamedRegion[] noFlyZones) {
         double stepSize = 0.00001;
 
         double distance = handler.distanceTo(start, end);
@@ -172,7 +172,7 @@ public class PathCharter {
     }
 
 
-    public static LngLat closestEdge (LngLat restaurantLocation){
+    private static LngLat closestEdge (LngLat restaurantLocation){
 
         //Check if starting point is already in central
         if(handler.isInCentralArea(restaurantLocation,central)){
@@ -195,5 +195,6 @@ public class PathCharter {
 
         return new LngLat(closestX,closestY);
     }
-
+    private record Node(LngLat location, Node parent, double heuristics) {
+    }
 }
