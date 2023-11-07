@@ -22,7 +22,7 @@ public class LngLatHandler implements LngLatHandling{
         double x = (x1-x2);
         double y = (y1-y2);
 
-        return Math.sqrt(x*x + y*y);
+        return round(Math.sqrt(x*x + y*y));
     }
 
     @Override
