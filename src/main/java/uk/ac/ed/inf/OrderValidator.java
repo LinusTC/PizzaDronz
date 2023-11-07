@@ -1,6 +1,8 @@
 package uk.ac.ed.inf;
 
 import uk.ac.ed.inf.ilp.data.Order;
+
+import java.time.LocalDate;
 import java.util.regex.*;
 
 import uk.ac.ed.inf.ilp.data.Pizza;
@@ -229,5 +231,12 @@ public class OrderValidator implements OrderValidation {
 
         return Arrays.stream(firstPizzaRestaurant.openingDays())
                 .anyMatch(day -> day == order.getOrderDate().getDayOfWeek());
+    }
+
+    public static Order[] getValidOrdersOnDay (LocalDate date, Order[] orders){
+
+        return Arrays.stream(orders)
+                .filter(order -> order.getOrderStatus().equals(OrderStatus.VALID_BUT_NOT_DELIVERED))
+                .toArray(Order[]::new);
     }
 }

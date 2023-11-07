@@ -69,7 +69,6 @@ public class Testing {
         //Test to get all orders/validOrders on specific date
         LocalDate date = LocalDate.of(2023,9,1);
         Order[] ordersOnDate = getOrdersOnDay(date);
-        Order[] validOrdersOnDate = getValidOrdersOnDay(date);
         for (Order orders: ordersOnDate){
             System.out.println("Pizzas Number:" + orders.getOrderNo());
             System.out.println("Pizzas Date:" + orders.getOrderDate());

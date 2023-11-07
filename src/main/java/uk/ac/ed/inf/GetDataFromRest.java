@@ -94,25 +94,12 @@ public class GetDataFromRest {
         }
     }
 
-    public  static Order[] getOrdersOnDay (LocalDate date){
+    public static Order[] getOrdersOnDay (LocalDate date){
 
         Order[] orders = getOrderData();
 
         return Arrays.stream(orders)
                 .filter(order -> order.getOrderDate().equals(date))
-                .toArray(Order[]::new);
-    }
-
-    public  static Order[] getValidOrdersOnDay (LocalDate date){
-
-        Order[] orders = getOrdersOnDay(date);
-
-        for (Order order: orders){
-            new OrderValidator().validateOrder(order, getRestaurantsData());
-        }
-
-        return Arrays.stream(orders)
-                .filter(order -> order.getOrderStatus().equals(OrderStatus.VALID_BUT_NOT_DELIVERED))
                 .toArray(Order[]::new);
     }
 }

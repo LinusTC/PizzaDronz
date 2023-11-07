@@ -1,5 +1,6 @@
 package uk.ac.ed.inf;
 
+import uk.ac.ed.inf.ilp.data.*;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -24,11 +25,18 @@ public class App
             System.exit(0);
         }
 
-        else {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDate localDate = LocalDate.parse(date, formatter);
-            GetDataFromRest.setBaseUrl(url);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.parse(date, formatter);
+        GetDataFromRest.setBaseUrl(url);
+
+        Order[] allOrdersDate = GetDataFromRest.getOrderData();
+        Restaurant[] restaurantData = GetDataFromRest.getRestaurantsData();
+
+        for (Order order: allOrdersDate){
+            new OrderValidator().validateOrder(order, restaurantData);
         }
+
+        Order[] validOrdersDate = OrderValidator.getValidOrdersOnDay(localDate, allOrdersDate);
 
     }
 
