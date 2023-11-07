@@ -1,5 +1,6 @@
 package uk.ac.ed.inf;
 
+import uk.ac.ed.inf.ilp.constant.OrderStatus;
 import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.data.Order;
@@ -67,12 +68,14 @@ public class PathCharter {
             PathPoint[] pathToRest = modAStarAlg(appleton, orderRestaurant.location());
             PathPoint[] restToAT = modAStarAlg(pathToRest[pathToRest.length-1].location, appleton);
 
+            validOrder.setOrderStatus(OrderStatus.DELIVERED);
             return Stream.of(pathToRest, restToAT).filter(Objects::nonNull)
                     .flatMap(Arrays::stream)
                     .toArray(PathPoint[]::new);
         }
 
         else{
+            //Go to edge restaurant is closest then go directly to restaurant from edge
             LngLat edge = closestEdge(orderRestaurant.location());
             PathPoint[] pt1 = modAStarAlg(appleton,edge);
             PathPoint[] pt2 = modAStarAlg(edge, orderRestaurant.location());
@@ -88,6 +91,7 @@ public class PathCharter {
                 pt4 = Arrays.copyOfRange(pt4, 1, pt4.length);
             }
 
+            validOrder.setOrderStatus(OrderStatus.DELIVERED);
             return Stream.of(pt1, pt2, pt3, pt4)
                     .flatMap(Arrays::stream)
                     .toArray(PathPoint[]::new);
