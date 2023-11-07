@@ -5,7 +5,6 @@ import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.ilp.data.Restaurant;
 import java.util.*;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import static uk.ac.ed.inf.LngLatHandler.round;
 
@@ -19,28 +18,80 @@ public class PathCharter {
     private static final LngLatHandler handler = new LngLatHandler();
 
     public static Move[] totalMovesPerOrder(Order order) {
-        return null;
+
+        PathPoint[] orderPath = fullPath(order);
+
+        List<Move> orderMovesList = new ArrayList<>();
+        for(int i = 0; i < orderPath.length;i++){
+
+            PathPoint current = orderPath[i];
+            PathPoint next = (i < orderPath.length - 1) ? orderPath[i + 1] : current;
+            double angle = next.angleFromParent;
+
+            if(next.equals(current)){
+                angle = 999;
+            }
+            orderMovesList.add(pptoMove(order, current.location, angle, next.location));
+
+        }
+
+        return orderMovesList.toArray(new Move[0]);
     }
 
-    public static PathPoint[] pathFromAT (Order validOrder){
+    private static Move pptoMove (Order order, LngLat first, double angle, LngLat second){
+        //Order Number
+        String orderNumber = order.getOrderNo();
+
+        //fromLng and fromLat
+        double firstLng = first.lng();
+        double firstLat = first.lat();
+
+        //toLng and toLat
+        double secondLng = second.lng();
+        double secondLat = second.lat();
+
+        return new Move(orderNumber
+                , (float)firstLng
+                , (float)firstLat
+                , (float)angle
+                , (float)secondLng
+                , (float)secondLat);
+    }
+
+    private static PathPoint[] fullPath (Order validOrder){
 
         Restaurant orderRestaurant = OrderValidator.findPizzaRestaurant(validOrder.getPizzasInOrder()[0], GetDataFromRest.getRestaurantsData());
 
+        //If restaurant is in central, find path
         if (handler.isInCentralArea(Objects.requireNonNull(orderRestaurant).location(), central)){
-            return modAStarAlg(appleton, orderRestaurant.location());
+            PathPoint[] pathToRest = modAStarAlg(appleton, orderRestaurant.location());
+            PathPoint[] restToAT = modAStarAlg(pathToRest[pathToRest.length-1].location, appleton);
+
+            return Stream.of(pathToRest, restToAT).filter(Objects::nonNull)
+                    .flatMap(Arrays::stream)
+                    .toArray(PathPoint[]::new);
         }
 
         else{
             LngLat edge = closestEdge(orderRestaurant.location());
             PathPoint[] pt1 = modAStarAlg(appleton,edge);
             PathPoint[] pt2 = modAStarAlg(edge, orderRestaurant.location());
+            PathPoint[] pt3 = modAStarAlg(orderRestaurant.location(), edge);
+            PathPoint[] pt4 = modAStarAlg(edge, appleton);
 
-            if (pt1 != null) {
-                if (pt2 != null) {
-                    return Stream.concat(Arrays.stream(pt1), Arrays.stream(pt2)).toArray(PathPoint[]::new);
-                }
+            assert pt2 != null;
+            if (pt2.length > 1) {
+                pt2 = Arrays.copyOfRange(pt2, 1, pt2.length);
             }
-            return null;
+            assert pt4 != null;
+            if (pt4.length > 1) {
+                pt4 = Arrays.copyOfRange(pt4, 1, pt4.length);
+            }
+
+            return Stream.of(pt1, pt2, pt3, pt4)
+                    .flatMap(Arrays::stream)
+                    .toArray(PathPoint[]::new);
+
         }
     }
 
@@ -83,7 +134,7 @@ public class PathCharter {
                 List<PathPoint> path = new ArrayList<>();
                 Node temp = currentNode;
                 while (temp != null){
-                    PathPoint newPP = new PathPoint(temp.location,temp.angle);
+                    PathPoint newPP = new PathPoint(temp.location,temp.angleFromParent);
                     path.add(newPP);
                     temp = temp.parent();
                 }
@@ -98,8 +149,8 @@ public class PathCharter {
                 LngLat parentLocation = currentNode.location();
                 LngLat childLocation = handler.nextPosition(parentLocation, 22.5*i);
 
-                //Angle
-                double angle = 22.5*i;
+                //Angle from parent
+                double angleFromParent = 22.5*i;
 
                 //Heuristics
                 double heuristics = handler.distanceTo(childLocation, end);
@@ -119,7 +170,7 @@ public class PathCharter {
                     continue;
                 }
 
-                Node tempChildNode = new Node(childLocation, currentNode, heuristics, angle);
+                Node tempChildNode = new Node(childLocation, currentNode, heuristics, angleFromParent);
                 childNodes.add(tempChildNode);
             }
 
@@ -153,6 +204,7 @@ public class PathCharter {
         return null;
     }
 
+    //Check if path between two nodes is clear, not within noFlyZones
     private static boolean isPathClear(LngLat start, LngLat end) {
         double stepSize = 0.00001;
 
@@ -173,7 +225,7 @@ public class PathCharter {
         return true;
     }
 
-
+    //Get the central edge closest to restaurant
     private static LngLat closestEdge (LngLat restaurantLocation){
 
         //Check if starting point is already in central
@@ -197,10 +249,9 @@ public class PathCharter {
 
         return new LngLat(closestX,closestY);
     }
-    private record Node(LngLat location, Node parent, double heuristics, double angle) {
+
+    private record Node(LngLat location, Node parent, double heuristics, double angleFromParent) {
     }
-    public record PathPoint(LngLat location, double angle) {
-    }
-    public record Move(String orderNo, float fromLng, float fromLat, float angle, float toLng, float toLat) {
+    private record PathPoint(LngLat location, double angleFromParent) {
     }
 }

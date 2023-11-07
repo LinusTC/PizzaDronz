@@ -15,7 +15,6 @@ public class Testing {
 
         Restaurant[] restaurants = getRestaurantsData();
 
-        /*
         //Test to get Central Area
         System.out.println(getCentralAreaData().name());
         for (LngLat vertex: getCentralAreaData().vertices()){
@@ -92,22 +91,15 @@ public class Testing {
         LngLat sampleInCenter = new LngLat(-3.1913256901223406, 55.94571464973686);
         LngLat sampleNotInCenter = new LngLat(-3.1933472253281536, 55.94576526828331);
         LngLatHandler handler = new LngLatHandler();
-        System.out.println(handler.distanceTo(sampleInCenter, PathCharter.closestEdge(sampleInCenter)));
-        System.out.println(handler.distanceTo(sampleNotInCenter, PathCharter.closestEdge(sampleNotInCenter)));
         System.out.println(handler.isCloseTo(sampleInCenter,new LngLat(sampleInCenter.lng() + 0.0002, sampleInCenter.lat())));
         System.out.println(handler.isInCentralArea(sampleInCenter, getCentralAreaData()));
         System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
-        */
 
-        Order order = getOrderData()[2];
-        PathCharter.Move[] path = PathCharter.totalMovesPerOrder(order);
+        //test to get moves
+        Move[] path = PathCharter.totalMovesPerOrder(order);
         System.out.println(Arrays.toString(path));
+        System.out.println(path.length);
 
-        PathCharter.PathPoint[] path1 = PathCharter.pathFromAT(order);
-        for(PathCharter.PathPoint node: path1){
-            System.out.println("[" + node.location().lng() + "," + node.location().lat()+ "],");
-            System.out.println(node);
-        }
     }
 }
 
