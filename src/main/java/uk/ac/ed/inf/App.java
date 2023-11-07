@@ -6,37 +6,46 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
 public class App
 {
     public static void main(String[] args){
-        System.out.println("Hello World");
 
-        String date = args[0];
-        String url = args[1];
+//        String dateInput = args[0];
+//        String urlInput = args[1];
 
-        if (!validDate(date)){
+        String dateInput = "2023-09-01";
+        String urlInput = "https://ilp-rest.azurewebsites.net";
+
+        if (!validDate(dateInput)){
             System.out.println("Invalid date format. Please use the format 'yyyy-MM-dd'.");
             System.exit(0);
         }
 
-        if(!validURL(url)){
+        if(!validURL(urlInput)){
             System.out.println("Invalid URL. Use https://ilp-rest.azurewebsites.net.");
             System.exit(0);
         }
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate localDate = LocalDate.parse(date, formatter);
-        GetDataFromRest.setBaseUrl(url);
+        LocalDate date = LocalDate.parse(dateInput, formatter);
+        GetDataFromRest.setBaseUrl(urlInput);
 
-        Order[] allOrdersDate = GetDataFromRest.getOrderData();
+        Order[] allOrdersDate = GetDataFromRest.getOrdersOnDay(date);
         Restaurant[] restaurantData = GetDataFromRest.getRestaurantsData();
 
         for (Order order: allOrdersDate){
             new OrderValidator().validateOrder(order, restaurantData);
         }
 
-        Order[] validOrdersDate = OrderValidator.getValidOrdersOnDay(localDate, allOrdersDate);
+        Order[] validOrdersDate = OrderValidator.getValidOrdersOnDay(date, allOrdersDate);
+
+        for(Order order: validOrdersDate){
+            PathCharter.totalMovesPerOrder(order);
+        }
+
+        CreateJsonDocuments.createDeliveries(date, allOrdersDate);
 
     }
 
