@@ -15,14 +15,14 @@ public class CreateJsonDocuments {
         JSONArray orders = new JSONArray();
 
         for (Order order : ordersOnDate) {
-            JSONObject jsonObject = new JSONObject();
+            JSONObject object = new JSONObject();
 
-            jsonObject.put("orderNo", order.getOrderNo());
-            jsonObject.put("orderStatus", order.getOrderStatus());
-            jsonObject.put("orderValidationCode", order.getOrderValidationCode());
-            jsonObject.put("costInPence", order.getPriceTotalInPence());
+            object.put("orderNo", order.getOrderNo());
+            object.put("orderStatus", order.getOrderStatus());
+            object.put("orderValidationCode", order.getOrderValidationCode());
+            object.put("costInPence", order.getPriceTotalInPence());
 
-            orders.put(jsonObject);
+            orders.put(object);
         }
 
         try {
@@ -35,8 +35,31 @@ public class CreateJsonDocuments {
         }
     }
 
-    public static void createFlightPath (LocalDate date) {
+    public static void createFlightPath (LocalDate date, Order[] ordersOnDate) {
+        JSONArray movesOfOrders = new JSONArray();
 
+        for (Order order : ordersOnDate) {
+            Move[] moves = PathCharter.totalMovesPerOrder(order);
+            for(Move move: moves){
+                JSONObject object = new JSONObject();
+                object.put("orderNo", move.orderNo());
+                object.put("fromLongitude", move.fromLng());
+                object.put("fromLatitude", move.fromLat());
+                object.put("angle", move.angle());
+                object.put("toLongitude", move.toLng());
+                object.put("toLatitude", move.toLat());
+                movesOfOrders.put(object);
+            }
+        }
+
+        try {
+            FileWriter file = new FileWriter(new File("resultfiles", "flightpath-" + date + ".json"));
+            file.write(movesOfOrders.toString());
+            file.close();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void createDrone (LocalDate date) {

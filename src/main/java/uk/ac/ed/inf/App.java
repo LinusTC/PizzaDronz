@@ -32,19 +32,19 @@ public class App
         LocalDate date = LocalDate.parse(dateInput, formatter);
         GetDataFromRest.setBaseUrl(urlInput);
 
+        //Get data from REST
         Order[] allOrdersDate = GetDataFromRest.getOrdersOnDay(date);
         Restaurant[] restaurantData = GetDataFromRest.getRestaurantsData();
 
+        //Validate Orders
         for (Order order: allOrdersDate){
             new OrderValidator().validateOrder(order, restaurantData);
         }
 
+        //Get all valid orders
         Order[] validOrdersDate = OrderValidator.getValidOrdersOnDay(date, allOrdersDate);
 
-        for(Order order: validOrdersDate){
-            PathCharter.totalMovesPerOrder(order);
-        }
-
+        CreateJsonDocuments.createFlightPath(date, validOrdersDate);
         CreateJsonDocuments.createDeliveries(date, allOrdersDate);
 
     }
