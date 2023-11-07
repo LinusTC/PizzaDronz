@@ -1,6 +1,8 @@
 package uk.ac.ed.inf;
 
 import uk.ac.ed.inf.ilp.data.*;
+
+import javax.sound.midi.SysexMessage;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -98,8 +100,14 @@ public class Testing {
         */
 
         Order order = getOrderData()[2];
-        Move[] path = PathCharter.totalMovesPerOrder(order);
+        PathCharter.Move[] path = PathCharter.totalMovesPerOrder(order);
+        System.out.println(Arrays.toString(path));
 
+        PathCharter.PathPoint[] path1 = PathCharter.pathFromAT(order);
+        for(PathCharter.PathPoint node: path1){
+            System.out.println("[" + node.location().lng() + "," + node.location().lat()+ "],");
+            System.out.println(node);
+        }
     }
 }
 

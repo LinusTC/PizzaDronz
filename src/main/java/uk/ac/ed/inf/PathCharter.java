@@ -5,8 +5,8 @@ import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.ilp.data.Restaurant;
 import java.util.*;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
 import static uk.ac.ed.inf.LngLatHandler.round;
 
 public class PathCharter {
@@ -18,11 +18,11 @@ public class PathCharter {
 
     private static final LngLatHandler handler = new LngLatHandler();
 
-    public static Move[] totalMovesPerOrder(Order order){
+    public static Move[] totalMovesPerOrder(Order order) {
         return null;
     }
 
-    private static LngLat[] pathFromAT (Order validOrder){
+    public static PathPoint[] pathFromAT (Order validOrder){
 
         Restaurant orderRestaurant = OrderValidator.findPizzaRestaurant(validOrder.getPizzasInOrder()[0], GetDataFromRest.getRestaurantsData());
 
@@ -32,25 +32,25 @@ public class PathCharter {
 
         else{
             LngLat edge = closestEdge(orderRestaurant.location());
-            LngLat[] pt1 = modAStarAlg(appleton,edge);
-            LngLat[] pt2 = modAStarAlg(edge, orderRestaurant.location());
+            PathPoint[] pt1 = modAStarAlg(appleton,edge);
+            PathPoint[] pt2 = modAStarAlg(edge, orderRestaurant.location());
 
             if (pt1 != null) {
                 if (pt2 != null) {
-                    return Stream.concat(Arrays.stream(pt1), Arrays.stream(pt2)).toArray(LngLat[]::new);
+                    return Stream.concat(Arrays.stream(pt1), Arrays.stream(pt2)).toArray(PathPoint[]::new);
                 }
             }
             return null;
         }
     }
 
-    private static LngLat[] modAStarAlg (LngLat start, LngLat end){
+    private static PathPoint[] modAStarAlg (LngLat start, LngLat end){
 
         List<Node> openList = new ArrayList<>();
         List<Node> closedList = new ArrayList<>();
 
-        Node startNode = new Node(start, null, 0);
-        Node endNode = new Node(end, null, 0);
+        Node startNode = new Node(start, null, 0, 999);
+        Node endNode = new Node(end, null, 0, 999);
 
         openList.add(startNode);
 
@@ -80,16 +80,15 @@ public class PathCharter {
             double dx = round(Math.abs(currentNode.location().lng() - endNode.location().lng()));
             double dy = round(Math.abs(currentNode.location().lat() - endNode.location().lat()));
             if (dx < 0.00015 && dy < 0.00015){
-                List<LngLat> path = new ArrayList<>();
+                List<PathPoint> path = new ArrayList<>();
                 Node temp = currentNode;
-
                 while (temp != null){
-                    path.add(temp.location());
+                    PathPoint newPP = new PathPoint(temp.location,temp.angle);
+                    path.add(newPP);
                     temp = temp.parent();
                 }
-
                 Collections.reverse(path);
-                return path.toArray(new LngLat[0]);
+                return path.toArray(new PathPoint[0]);
             }
 
             //Create a childNodes list
@@ -98,6 +97,9 @@ public class PathCharter {
                 //Location of child
                 LngLat parentLocation = currentNode.location();
                 LngLat childLocation = handler.nextPosition(parentLocation, 22.5*i);
+
+                //Angle
+                double angle = 22.5*i;
 
                 //Heuristics
                 double heuristics = handler.distanceTo(childLocation, end);
@@ -110,14 +112,14 @@ public class PathCharter {
                         break;
                     }
                 }
-                if (!isPathClear(parentLocation, childLocation, noFlyZones)){
+                if (!isPathClear(parentLocation, childLocation)){
                     inNoFlyZone = true;
                 }
                 if (inNoFlyZone) {
                     continue;
                 }
 
-                Node tempChildNode = new Node(childLocation, currentNode, heuristics);
+                Node tempChildNode = new Node(childLocation, currentNode, heuristics, angle);
                 childNodes.add(tempChildNode);
             }
 
@@ -151,7 +153,7 @@ public class PathCharter {
         return null;
     }
 
-    private static boolean isPathClear(LngLat start, LngLat end, NamedRegion[] noFlyZones) {
+    private static boolean isPathClear(LngLat start, LngLat end) {
         double stepSize = 0.00001;
 
         double distance = handler.distanceTo(start, end);
@@ -195,6 +197,10 @@ public class PathCharter {
 
         return new LngLat(closestX,closestY);
     }
-    private record Node(LngLat location, Node parent, double heuristics) {
+    private record Node(LngLat location, Node parent, double heuristics, double angle) {
+    }
+    public record PathPoint(LngLat location, double angle) {
+    }
+    public record Move(String orderNo, float fromLng, float fromLat, float angle, float toLng, float toLat) {
     }
 }
