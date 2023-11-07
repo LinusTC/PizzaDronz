@@ -7,8 +7,6 @@ import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.ilp.data.Restaurant;
 import java.util.*;
 import java.util.stream.Stream;
-import static uk.ac.ed.inf.LngLatHandler.round;
-
 public class PathCharter {
     private static final LngLat appleton = new LngLat(-3.186874, 55.944494);
     //Get Central
@@ -132,9 +130,8 @@ public class PathCharter {
             closedList.add(currentNode);
 
             //If endNode was found, build a path back to the start.
-            double dx = round(Math.abs(currentNode.location().lng() - endNode.location().lng()));
-            double dy = round(Math.abs(currentNode.location().lat() - endNode.location().lat()));
-            if (dx < 0.00015 && dy < 0.00015){
+            double distance = handler.distanceTo(currentNode.location, endNode.location);
+            if (distance < 0.00015){
                 List<PathPoint> path = new ArrayList<>();
                 Node temp = currentNode;
                 while (temp != null){
@@ -248,8 +245,8 @@ public class PathCharter {
         double yMax = vertices[0].lat();
 
         //Finds the closest point on central box
-        double closestX = round(Math.min(Math.max(x, xMin), xMax));
-        double closestY = round(Math.min(Math.max(y, yMin), yMax));
+        double closestX = Math.min(Math.max(x, xMin), xMax);
+        double closestY = Math.min(Math.max(y, yMin), yMax);
 
         return new LngLat(closestX,closestY);
     }
