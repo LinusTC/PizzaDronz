@@ -41,7 +41,7 @@ public class App
         }
 
         //Get all valid orders
-        Order[] validOrdersDate = OrderValidator.getValidOrdersOnDay(date, allOrdersDate);
+        Order[] validOrdersDate = OrderValidator.filterValidOrders(allOrdersDate);
 
         CreateJsonDocuments.createFlightPath(date, validOrdersDate);
         CreateJsonDocuments.createDeliveries(date, allOrdersDate);

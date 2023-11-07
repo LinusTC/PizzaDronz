@@ -22,27 +22,24 @@ public class PathCharter {
 
         LngLat startPoint = appleton;
         for(Order order: ordersToChart){
-            fullPath(order, appleton);
+
+            PathPoint[] orderPath = fullPath(order, startPoint);
+            for(int i = 0; i < orderPath.length;i++) {
+                PathPoint current = orderPath[i];
+                PathPoint next = (i < orderPath.length - 1) ? orderPath[i + 1] : current;
+                double angle = next.angleFromParent;
+
+                if(next.equals(current)){
+                    angle = 999;
+                }
+                orderMovesList.add(pptoMove(order, current.location, angle, next.location));
+            }
+
+            startPoint = orderPath[orderPath.length - 1 ].location;
+
         }
-        return null;
+        return orderMovesList.toArray(new Move[0]);
     }
-//    PathPoint[] orderPath = fullPath(order);
-//
-//    List<Move> orderMovesList = new ArrayList<>();
-//        for(int i = 0; i < orderPath.length;i++){
-//
-//        PathPoint current = orderPath[i];
-//        PathPoint next = (i < orderPath.length - 1) ? orderPath[i + 1] : current;
-//        double angle = next.angleFromParent;
-//
-//        if(next.equals(current)){
-//            angle = 999;
-//        }
-//        orderMovesList.add(pptoMove(order, current.location, angle, next.location));
-//
-//    }
-//
-//        return orderMovesList.toArray(new Move[0]);
 
     private static Move pptoMove (Order order, LngLat first, double angle, LngLat second){
         //Order Number

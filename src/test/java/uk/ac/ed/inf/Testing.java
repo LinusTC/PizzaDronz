@@ -92,17 +92,20 @@ public class Testing {
 //        System.out.println(handler.isInCentralArea(sampleInCenter, getCentralAreaData()));
 //        System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
 //
-//        //test to get moves
-//        Move[] path = PathCharter.totalMovesPerOrder(order);
-//        System.out.println(Arrays.toString(path));
-//        System.out.println(path.length);
-
-//        Order order = getOrderData()[3];
-//        PathCharter.PathPoint[] path = PathCharter.fullPath(order);
+        //test to get moves
+//        LocalDate date = LocalDate.of(2023,9,1);
+//        Order[] ordersOnDate = getOrdersOnDay(date);
 //
-//        for(PathCharter.PathPoint point: path){
-//            System.out.println("[" + point.location().lng() + "," + point.location().lat() + "],");
+//        for (Order order: ordersOnDate){
+//            new OrderValidator().validateOrder(order, restaurants);
 //        }
+//        Order[] validOrdersDate = OrderValidator.filterValidOrders(ordersOnDate);
+//
+//        Move[] path = PathCharter.totalMoves(validOrdersDate);
+//        for(Move move: path){
+//            System.out.println("[" + move.fromLng() + "," + move.fromLat() + "],");
+//        }
+//        System.out.println(path.length);
 
     }
 }

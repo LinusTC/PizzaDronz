@@ -233,7 +233,7 @@ public class OrderValidator implements OrderValidation {
                 .anyMatch(day -> day == order.getOrderDate().getDayOfWeek());
     }
 
-    public static Order[] getValidOrdersOnDay (LocalDate date, Order[] orders){
+    public static Order[] filterValidOrders (Order[] orders){
 
         return Arrays.stream(orders)
                 .filter(order -> order.getOrderStatus().equals(OrderStatus.VALID_BUT_NOT_DELIVERED))
