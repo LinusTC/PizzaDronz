@@ -35,9 +35,8 @@ public class CreateJsonDocuments {
         }
     }
 
-    public static void createFlightPath (LocalDate date, Order[] validOrdersOnDate) {
+    public static void createFlightPath (LocalDate date, Move[] path) {
         JSONArray movesOfOrders = new JSONArray();
-        Move[] path = PathCharter.totalMoves(validOrdersOnDate);
 
         for(Move move: path){
             JSONObject object = new JSONObject();
@@ -62,7 +61,31 @@ public class CreateJsonDocuments {
         }
     }
 
-    public static void createDrone (LocalDate date) {
+    public static void createDrone(LocalDate date, Move[] path) {
 
+        try {
+            FileWriter geojson = new FileWriter("resultfiles/drone-" + date + ".geojson");
+
+            // Start building the GeoJSON structure
+            geojson.write("{ \"type\": \"Feature\", \"properties\": {}, \"geometry\": { \"coordinates\": [");
+
+            // Write the coordinates from the 'path' array
+            for (int i = 0; i < path.length; i++) {
+                Move move = path[i];
+                geojson.write("[" + move.fromLng() + "," + move.fromLat() + "]");
+
+                // Add a comma if it's not the last coordinate
+                if (i < path.length - 1) {
+                    geojson.write(",");
+                }
+            }
+
+            // Close the GeoJSON structure
+            geojson.write("], \"type\": \"LineString\" } }");
+
+            geojson.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

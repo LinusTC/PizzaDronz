@@ -92,7 +92,7 @@ public class Testing {
 //        System.out.println(handler.isInCentralArea(sampleInCenter, getCentralAreaData()));
 //        System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
 //
-        //test to get moves
+//        //test to get moves
 //        LocalDate date = LocalDate.of(2023,9,1);
 //        Order[] ordersOnDate = getOrdersOnDay(date);
 //

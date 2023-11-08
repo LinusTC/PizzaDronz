@@ -14,7 +14,7 @@ public class App
 //        String dateInput = args[0];
 //        String urlInput = args[1];
 
-        String dateInput = "2023-09-01";
+        String dateInput = "2023-09-07";
         String urlInput = "https://ilp-rest.azurewebsites.net";
 
         if (!validDate(dateInput)){
@@ -27,6 +27,7 @@ public class App
             System.exit(0);
         }
 
+        //Set date and url as the current parameters
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse(dateInput, formatter);
         GetDataFromRest.setBaseUrl(urlInput);
@@ -43,9 +44,12 @@ public class App
         //Get all valid orders
         Order[] validOrdersDate = OrderValidator.filterValidOrders(allOrdersDate);
 
-        CreateJsonDocuments.createFlightPath(date, validOrdersDate);
-        CreateJsonDocuments.createDeliveries(date, allOrdersDate);
+        //Create the drone path
+        Move[] path = PathCharter.totalMoves(validOrdersDate);
 
+        CreateJsonDocuments.createFlightPath(date, path);
+        CreateJsonDocuments.createDrone(date,path);
+        CreateJsonDocuments.createDeliveries(date, allOrdersDate);
     }
 
     //Check if input date is valid
