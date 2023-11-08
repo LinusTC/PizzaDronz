@@ -3,10 +3,8 @@ package uk.ac.ed.inf;
 import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.interfaces.LngLatHandling;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
 import static uk.ac.ed.inf.GetDataFromRest.*;
 
 public class LngLatHandler implements LngLatHandling{

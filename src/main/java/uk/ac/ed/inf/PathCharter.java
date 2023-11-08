@@ -68,8 +68,9 @@ public class PathCharter {
         //If restaurant is in central, find path
         if (handler.isInCentralArea(Objects.requireNonNull(orderRestaurant).location(), central)){
             PathPoint[] pathToRest = modAStarAlg(startPoint, orderRestaurant.location());
-            PathPoint[] restToAT = modAStarAlg(pathToRest[pathToRest.length-1].location, appleton);
+            assert pathToRest != null;
 
+            PathPoint[] restToAT = modAStarAlg(pathToRest[pathToRest.length-1].location, appleton);
             validOrder.setOrderStatus(OrderStatus.DELIVERED);
             return Stream.of(pathToRest, restToAT).filter(Objects::nonNull)
                     .flatMap(Arrays::stream)
