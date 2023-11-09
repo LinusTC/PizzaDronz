@@ -76,11 +76,11 @@ public class PathCharter {
 
             double stepSize = handler.distanceTo(startPoint, restLocation)/3;
 
-            PathPoint[] unrefinedPathToRest = modAStarAlg(startPoint, restLocation, stepSize);
-            PathPoint[] pathToRest = fullyRefine(unrefinedPathToRest, stepSize, restLocation);
+            PathPoint[] unrefinedPathToRest = AstarAlg(startPoint, restLocation, stepSize);
+            PathPoint[] pathToRest = fullyRefine(unrefinedPathToRest, restLocation);
 
-            PathPoint[] unrefinedPathToAT = modAStarAlg(restLocation, appleton, stepSize);
-            PathPoint[] restToAT = fullyRefine(unrefinedPathToAT, stepSize, appleton);
+            PathPoint[] unrefinedPathToAT = AstarAlg(pathToRest[pathToRest.length-1].location, appleton, stepSize);
+            PathPoint[] restToAT = fullyRefine(unrefinedPathToAT, appleton);
 
             validOrder.setOrderStatus(OrderStatus.DELIVERED);
             return Stream.of(pathToRest, restToAT).filter(Objects::nonNull)
@@ -94,17 +94,17 @@ public class PathCharter {
             double stepSizeToEdge = handler.distanceTo(startPoint, edge)/3;
             double stepSizeToRest = handler.distanceTo(edge, restLocation)/3;
 
-            PathPoint[] unrefinedPt1 = modAStarAlg(startPoint,edge, stepSizeToEdge);
-            PathPoint[] pt1 = fullyRefine(unrefinedPt1, stepSizeToEdge, edge);
+            PathPoint[] unrefinedPt1 = AstarAlg(startPoint,edge, stepSizeToEdge);
+            PathPoint[] pt1 = fullyRefine(unrefinedPt1, edge);
 
-            PathPoint[] unrefinedPt2 = modAStarAlg(edge, restLocation, stepSizeToEdge);
-            PathPoint[] pt2 = fullyRefine(unrefinedPt2, stepSizeToRest, restLocation);
+            PathPoint[] unrefinedPt2 = AstarAlg(pt1[pt1.length - 1].location, restLocation, stepSizeToEdge);
+            PathPoint[] pt2 = fullyRefine(unrefinedPt2, restLocation);
 
-            PathPoint[] unrefinedPt3 = modAStarAlg(restLocation, edge, stepSizeToEdge);
-            PathPoint[] pt3 = fullyRefine(unrefinedPt3, stepSizeToRest, edge);
+            PathPoint[] unrefinedPt3 = AstarAlg(pt2[pt2.length - 1].location, edge, stepSizeToEdge);
+            PathPoint[] pt3 = fullyRefine(unrefinedPt3, edge);
 
-            PathPoint[] unrefinedPt4 = modAStarAlg(edge, appleton, stepSizeToRest);
-            PathPoint[] pt4 = fullyRefine(unrefinedPt4, stepSizeToEdge, appleton);
+            PathPoint[] unrefinedPt4 = AstarAlg(pt3[pt3.length - 1].location, appleton, stepSizeToRest);
+            PathPoint[] pt4 = fullyRefine(unrefinedPt4, appleton);
 
             assert pt2 != null;
             if (pt2.length > 1) {
@@ -123,44 +123,20 @@ public class PathCharter {
         }
     }
 
-    public static PathPoint[] fullyRefine(PathPoint[] unrefinedPath, double initStepSize, LngLat end) {
-        double currentStepSize = initStepSize;
-        double minStepSize = maxMoveDistance * 3; // Minimum step size
-
-        while (currentStepSize >= minStepSize * 3) {
-            unrefinedPath = refine(unrefinedPath, end);
-            currentStepSize /= 3;
-        }
-
-        for (int i = 1; i < unrefinedPath.length - 1; i++) {
-            LngLat child = unrefinedPath[i - 1].location;
-            LngLat parent = unrefinedPath[i].location;
-
-            double angle = calculateBearing(child, parent);
-
-            PathPoint pointWithAngle = new PathPoint(unrefinedPath[i].location, angle);
-            unrefinedPath[i] = pointWithAngle;
-        }
-
-        return unrefinedPath;
-    }
-
-
-    public static PathPoint[] refine (PathPoint[] unrefinedPath, LngLat end){
-
+    public static PathPoint[] fullyRefine(PathPoint[] unrefinedPath, LngLat end) {
         List<PathPoint> refinedPath = new ArrayList<>();
         refinedPath.add(unrefinedPath[0]);
         for(int i = 1; i < unrefinedPath.length; i++){
             LngLat next = unrefinedPath[i].location;
             LngLat curr = unrefinedPath[i-1].location;
 
-            PathPoint[] subPath = modAStarAlg(curr, next, maxMoveDistance/3);
+            PathPoint[] subPath = AstarAlg(curr, next, round(maxMoveDistance));
 
-            for (int j = 1; j < subPath.length - 1 ;j++){
+            for (int j = 1; j < subPath.length ;j++){
                 LngLat subCurr = subPath[j].location;
                 LngLat subPrev = subPath[j-1].location;
 
-                if(handler.distanceTo(subPrev, subCurr) >= maxMoveDistance){
+                if(handler.distanceTo(subPrev, subCurr) >= 0.00015){
                     refinedPath.add(subPath[j]);
                 }
 
@@ -168,13 +144,14 @@ public class PathCharter {
         }
 
         LngLat unrefinedPathEnd = unrefinedPath[unrefinedPath.length - 1].location;
-        PathPoint[] subPathLast = modAStarAlg(unrefinedPathEnd, end, maxMoveDistance/3);
+        PathPoint[] subPathLast = AstarAlg(unrefinedPathEnd, end, round(maxMoveDistance));
         refinedPath.addAll(Arrays.asList(subPathLast));
 
         return refinedPath.toArray(new PathPoint[0]);
     }
 
-    public static PathPoint[] modAStarAlg (LngLat start, LngLat end, double stepSize){
+
+    public static PathPoint[] AstarAlg (LngLat start, LngLat end, double stepSize){
 
         stepSize = Math.ceil(stepSize/ 0.00015) * 0.00015;
 
@@ -346,7 +323,7 @@ public class PathCharter {
     }
 
     public static double calculateBearing(LngLat start, LngLat end) {
-        if(new LngLatHandler().distanceTo(start,end) < maxMoveDistance){
+        if(new LngLatHandler().distanceTo(start,end) < 0.00015){
             return 999;
         }
         double lat1 = Math.toRadians(start.lat());

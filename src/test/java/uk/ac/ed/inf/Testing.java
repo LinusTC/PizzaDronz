@@ -126,19 +126,12 @@ public class Testing {
         Order order = ordersOnDate[3];
 
         double step = new LngLatHandler().distanceTo(appleton, rest)/3;
-        PathCharter.PathPoint[] un = PathCharter.modAStarAlg(appleton,rest, step);
+        PathCharter.PathPoint[] un = PathCharter.AstarAlg(appleton,rest, step);
 
         PathCharter.PathPoint[] refined2 = PathCharter.fullPath(order, appleton);
 
         System.out.println(Arrays.toString(refined2));
         System.out.println(refined2.length);
-
-        for (int i = 1; i < refined2.length - 1;i++){
-            LngLat prev = refined2[i - 1].location();
-            LngLat curr = refined2[i].location();
-            double dist = new LngLatHandler().distanceTo(prev, curr);
-            System.out.println(dist);
-        }
 
         for (PathCharter.PathPoint point: refined2){
             System.out.println("[" + point.location().lng() + "," + point.location().lat() + "],");
