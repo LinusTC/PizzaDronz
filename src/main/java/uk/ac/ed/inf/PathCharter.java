@@ -176,6 +176,8 @@ public class PathCharter {
 
     public static PathPoint[] modAStarAlg (LngLat start, LngLat end, double stepSize){
 
+        stepSize = Math.ceil(stepSize/ 0.00015) * 0.00015;
+
         List<Node> openList = new ArrayList<>();
         List<Node> closedList = new ArrayList<>();
 
