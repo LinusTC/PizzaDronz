@@ -123,7 +123,7 @@ public class Testing {
         LngLat appleton = new LngLat(-3.1869, 	55.9445);
         LngLat rest = new LngLat(-3.1913, 55.9455);
         Order[] ordersOnDate = getOrdersOnDay(date);
-        Order order = ordersOnDate[3];
+        Order order = ordersOnDate[2];
 
         double step = new LngLatHandler().distanceTo(appleton, rest)/3;
         PathCharter.PathPoint[] un = PathCharter.AstarAlg(appleton,rest, step);

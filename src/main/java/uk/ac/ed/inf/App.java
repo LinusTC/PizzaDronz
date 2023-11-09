@@ -11,11 +11,11 @@ public class App
 {
     public static void main(String[] args){
 
-        String dateInput = args[0];
-        String urlInput = args[1];
+//        String dateInput = args[0];
+//        String urlInput = args[1];
 
-//        String dateInput = "2023-09-01";
-//        String urlInput = "https://ilp-rest.azurewebsites.net";
+        String dateInput = "2023-09-01";
+        String urlInput = "https://ilp-rest.azurewebsites.net";
 
         if (!validDate(dateInput)){
             System.out.println("Invalid date format. Please use the format 'yyyy-MM-dd'.");

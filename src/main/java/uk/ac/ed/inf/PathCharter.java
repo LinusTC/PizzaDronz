@@ -74,7 +74,7 @@ public class PathCharter {
         //If restaurant is in central, find path
         if (handler.isInCentralArea(restLocation, central)){
 
-            double stepSize = handler.distanceTo(startPoint, restLocation)/3;
+            double stepSize = handler.distanceTo(startPoint, restLocation)/6;
 
             PathPoint[] unrefinedPathToRest = AstarAlg(startPoint, restLocation, stepSize);
             PathPoint[] pathToRest = fullyRefine(unrefinedPathToRest, restLocation);
@@ -91,7 +91,7 @@ public class PathCharter {
         else{
             //Go to edge restaurant is closest then go directly to restaurant from edge
             LngLat edge = closestEdge(restLocation);
-            double stepSizeToEdge = handler.distanceTo(startPoint, edge)/3;
+            double stepSizeToEdge = handler.distanceTo(startPoint, edge)/6;
             double stepSizeToRest = handler.distanceTo(edge, restLocation)/3;
 
             PathPoint[] unrefinedPt1 = AstarAlg(startPoint,edge, stepSizeToEdge);
@@ -130,7 +130,7 @@ public class PathCharter {
             LngLat next = unrefinedPath[i].location;
             LngLat curr = unrefinedPath[i-1].location;
 
-            PathPoint[] subPath = AstarAlg(curr, next, round(maxMoveDistance));
+            PathPoint[] subPath = AstarAlg(curr, next, maxMoveDistance);
 
             for (int j = 1; j < subPath.length ;j++){
                 LngLat subCurr = subPath[j].location;
@@ -144,7 +144,7 @@ public class PathCharter {
         }
 
         LngLat unrefinedPathEnd = unrefinedPath[unrefinedPath.length - 1].location;
-        PathPoint[] subPathLast = AstarAlg(unrefinedPathEnd, end, round(maxMoveDistance));
+        PathPoint[] subPathLast = AstarAlg(unrefinedPathEnd, end, maxMoveDistance);
         refinedPath.addAll(Arrays.asList(subPathLast));
 
         return refinedPath.toArray(new PathPoint[0]);
