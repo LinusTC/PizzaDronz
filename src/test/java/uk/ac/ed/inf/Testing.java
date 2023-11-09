@@ -92,21 +92,57 @@ public class Testing {
 //        System.out.println(handler.isInCentralArea(sampleInCenter, getCentralAreaData()));
 //        System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
 //
-//        //test to get moves
-//        LocalDate date = LocalDate.of(2023,9,1);
-//        Order[] ordersOnDate = getOrdersOnDay(date);
-//
-//        for (Order order: ordersOnDate){
-//            new OrderValidator().validateOrder(order, restaurants);
-//        }
-//        Order[] validOrdersDate = OrderValidator.filterValidOrders(ordersOnDate);
-//
-//        Move[] path = PathCharter.totalMoves(validOrdersDate);
-//        for(Move move: path){
-//            System.out.println("[" + move.fromLng() + "," + move.fromLat() + "],");
-//        }
-//        System.out.println(path.length);
+        //test to get moves
+        LocalDate date = LocalDate.of(2023,9,1);
+        Order[] ordersOnDate = getOrdersOnDay(date);
 
+        for (Order order: ordersOnDate){
+            new OrderValidator().validateOrder(order, restaurants);
+        }
+        Order[] validOrdersDate = OrderValidator.filterValidOrders(ordersOnDate);
+
+        Move[] path = PathCharter.totalMoves(validOrdersDate);
+        for(Move move: path){
+            System.out.println("[" + move.fromLng() + "," + move.fromLat() + "],");
+        }
+        System.out.println(path.length);
+
+        for (int i = 1; i < path.length; i++) {
+            double fromLng1 = path[i - 1].fromLng();
+            double fromLat1 = path[i - 1].fromLat();
+
+            double fromLng2 = path[i].fromLng();
+            double fromLat2 = path[i].fromLat();
+
+            double distance = new LngLatHandler().distanceTo(new LngLat(fromLng1, fromLat1), new LngLat(fromLng2, fromLat2));
+
+            System.out.println("[" + fromLng1 + "," + fromLat1 + "] to [" + fromLng2 + "," + fromLat2 + "], Distance: " + distance);
+        }
+
+//        LngLat appleton = new LngLat(-3.1869, 	55.9445);
+//        LngLat rest = new LngLat(-3.1913, 55.9455);
+//
+//        double step = new LngLatHandler().distanceTo(appleton, rest)/3;
+//        PathCharter.PathPoint[] un = PathCharter.modAStarAlg(appleton,rest, step);
+//
+//        PathCharter.PathPoint[] refined2 = PathCharter.fullyRefine(un, step, rest);
+//
+//        System.out.println(Arrays.toString(refined2));
+//        System.out.println(refined2.length);
+//
+//        for (int i = 1; i < refined2.length - 1;i++){
+//            LngLat prev = refined2[i - 1].location();
+//            LngLat curr = refined2[i].location();
+//            double dist = new LngLatHandler().distanceTo(prev, curr);
+//            System.out.println(dist);
+//        }
+//
+//        for (PathCharter.PathPoint point: refined2){
+//            System.out.println("[" + point.location().lng() + "," + point.location().lat() + "],");
+//        }
+//
+//        LngLat temp = new LngLat(-3.1912955655638755,55.945375300759984);
+//        System.out.println(new LngLatHandler().isCloseTo(temp, rest));
     }
 }
 
