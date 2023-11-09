@@ -3,6 +3,8 @@ package uk.ac.ed.inf;
 import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.interfaces.LngLatHandling;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import static uk.ac.ed.inf.GetDataFromRest.*;
 
 public class LngLatHandler implements LngLatHandling{
@@ -18,7 +20,7 @@ public class LngLatHandler implements LngLatHandling{
         double x = (x1-x2);
         double y = (y1-y2);
 
-        return (Math.sqrt(x*x + y*y));
+        return round(Math.sqrt(x*x + y*y));
     }
 
     @Override
@@ -40,8 +42,8 @@ public class LngLatHandler implements LngLatHandling{
             return startPosition;
         }
 
-        double nextX = startPosition.lng() + (.00015 * Math.cos(Math.toRadians(angle)));
-        double nextY = startPosition.lat() + (.00015 * Math.sin(Math.toRadians(angle)));
+        double nextX = round(startPosition.lng() + (.00015 * Math.cos(Math.toRadians(angle))));
+        double nextY = round(startPosition.lat() + (.00015 * Math.sin(Math.toRadians(angle))));
 
         return new LngLat(nextX, nextY);
     }
@@ -79,15 +81,9 @@ public class LngLatHandler implements LngLatHandling{
         return temp;
     }
 
-    public LngLat nextPositionAStar(LngLat startPosition, double angle, double stepSize) {
-
-        if (angle == 999){
-            return startPosition;
-        }
-
-        double nextX = startPosition.lng() + (stepSize * Math.cos(Math.toRadians(angle)));
-        double nextY = startPosition.lat() + (stepSize * Math.sin(Math.toRadians(angle)));
-
-        return new LngLat(nextX, nextY);
+    public static double round(double value) {
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(5, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 }

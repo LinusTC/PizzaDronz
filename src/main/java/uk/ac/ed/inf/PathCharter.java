@@ -17,8 +17,6 @@ public class PathCharter {
 
     private static final LngLatHandler handler = new LngLatHandler();
 
-    private static final double maxMoveDistance = 0.00015;
-
     public static Move[] totalMoves(Order[] ordersToChart) {
         List<Move> orderMovesList = new ArrayList<>();
 
@@ -66,19 +64,13 @@ public class PathCharter {
     private static PathPoint[] fullPath (Order validOrder, LngLat startPoint){
 
         Restaurant orderRestaurant = OrderValidator.findPizzaRestaurant(validOrder.getPizzasInOrder()[0], GetDataFromRest.getRestaurantsData());
-        LngLat restLocation = Objects.requireNonNull(orderRestaurant).location();
 
         //If restaurant is in central, find path
-        if (handler.isInCentralArea(restLocation, central)){
+        if (handler.isInCentralArea(Objects.requireNonNull(orderRestaurant).location(), central)){
+            PathPoint[] pathToRest = modAStarAlg(startPoint, orderRestaurant.location());
+            assert pathToRest != null;
 
-            double stepSize = handler.distanceTo(startPoint, restLocation)/3;
-
-            PathPoint[] unrefinedPathToRest = modAStarAlg(startPoint, restLocation, stepSize);
-            PathPoint[] pathToRest = fullyRefine(unrefinedPathToRest, stepSize, restLocation);
-
-            PathPoint[] unrefinedPathToAT = modAStarAlg(pathToRest[pathToRest.length-1].location, appleton, stepSize);
-            PathPoint[] restToAT = fullyRefine(unrefinedPathToAT, stepSize, appleton);
-
+            PathPoint[] restToAT = modAStarAlg(pathToRest[pathToRest.length-1].location, appleton);
             validOrder.setOrderStatus(OrderStatus.DELIVERED);
             return Stream.of(pathToRest, restToAT).filter(Objects::nonNull)
                     .flatMap(Arrays::stream)
@@ -87,21 +79,11 @@ public class PathCharter {
 
         else{
             //Go to edge restaurant is closest then go directly to restaurant from edge
-            LngLat edge = closestEdge(restLocation);
-            double stepSizeToEdge = handler.distanceTo(startPoint, edge)/3;
-            double stepSizeToRest = handler.distanceTo(edge, restLocation)/3;
-
-            PathPoint[] unrefinedPt1 = modAStarAlg(startPoint,edge, stepSizeToEdge);
-            PathPoint[] pt1 = fullyRefine(unrefinedPt1, stepSizeToEdge, edge);
-
-            PathPoint[] unrefinedPt2 = modAStarAlg(edge, restLocation, stepSizeToEdge);
-            PathPoint[] pt2 = fullyRefine(unrefinedPt2, stepSizeToRest, restLocation);
-
-            PathPoint[] unrefinedPt3 = modAStarAlg(restLocation, edge, stepSizeToEdge);
-            PathPoint[] pt3 = fullyRefine(unrefinedPt3, stepSizeToRest, edge);
-
-            PathPoint[] unrefinedPt4 = modAStarAlg(edge, appleton, stepSizeToRest);
-            PathPoint[] pt4 = fullyRefine(unrefinedPt4, stepSizeToEdge, appleton);
+            LngLat edge = closestEdge(orderRestaurant.location());
+            PathPoint[] pt1 = modAStarAlg(startPoint,edge);
+            PathPoint[] pt2 = modAStarAlg(edge, orderRestaurant.location());
+            PathPoint[] pt3 = modAStarAlg(orderRestaurant.location(), edge);
+            PathPoint[] pt4 = modAStarAlg(edge, appleton);
 
             assert pt2 != null;
             if (pt2.length > 1) {
@@ -120,44 +102,13 @@ public class PathCharter {
         }
     }
 
-    private static PathPoint[] fullyRefine(PathPoint[] unrefinedPath, double initStepSize, LngLat end){
-        double currentStepSize = initStepSize;
-
-        while (currentStepSize > maxMoveDistance * 3) {
-            unrefinedPath = refine(unrefinedPath, currentStepSize, end);
-            currentStepSize /= 3;
-        }
-
-        return unrefinedPath;
-    }
-    private static PathPoint[] refine (PathPoint[] unrefinedPath, double stepSize, LngLat end){
-
-        stepSize = stepSize - (stepSize % 0.00015);
-
-        List<PathPoint> refinedPath = new ArrayList<>();
-
-        for(int i = 0; i < unrefinedPath.length - 1; i++){
-            LngLat curr = unrefinedPath[i].location;
-            LngLat next = unrefinedPath[i+1].location;
-
-            PathPoint[] subPath = modAStarAlg(curr, next, stepSize/3);
-            refinedPath.addAll(Arrays.asList(subPath));
-        }
-
-        LngLat unrefinedPathEnd = unrefinedPath[unrefinedPath.length - 1].location;
-        PathPoint[] subPathLast = modAStarAlg(unrefinedPathEnd, end, stepSize/3);
-        refinedPath.addAll(Arrays.asList(subPathLast));
-
-        return refinedPath.toArray(new PathPoint[0]);
-    }
-
-    private static PathPoint[] modAStarAlg (LngLat start, LngLat end, double stepSize){
+    private static PathPoint[] modAStarAlg (LngLat start, LngLat end){
 
         List<Node> openList = new ArrayList<>();
         List<Node> closedList = new ArrayList<>();
 
-        Node startNode = new Node(start, null, handler.distanceTo(start,end), 999, 0, 0);
-        Node endNode = new Node(end, null, 0, 999, 0, 0);
+        Node startNode = new Node(start, null, 0, 999);
+        Node endNode = new Node(end, null, 0, 999);
 
         openList.add(startNode);
 
@@ -175,7 +126,7 @@ public class PathCharter {
             for (int i = 0; i < openList.size(); i++) {
                 Node item = openList.get(i);
 
-                if (item.totalCost < currentNode.totalCost) {
+                if (item.heuristics() < currentNode.heuristics()) {
                     currentNode = item;
                     currentIndex = i;
                 }
@@ -185,7 +136,7 @@ public class PathCharter {
 
             //If endNode was found, build a path back to the start.
             double distance = handler.distanceTo(currentNode.location, endNode.location);
-            if (distance < stepSize){
+            if (distance < 0.00015){
                 List<PathPoint> path = new ArrayList<>();
                 Node temp = currentNode;
                 while (temp != null){
@@ -201,20 +152,14 @@ public class PathCharter {
             List<Node> childNodes = new ArrayList<>();
             for (int i = 0; i < 16; i++){
                 //Location of child
-                LngLat parentLocation = currentNode.location;
-                LngLat childLocation = handler.nextPositionAStar(parentLocation, 22.5*i, stepSize);
+                LngLat parentLocation = currentNode.location();
+                LngLat childLocation = handler.nextPosition(parentLocation, 22.5*i);
 
                 //Angle from parent
                 double angleFromParent = 22.5*i;
 
                 //Heuristics
                 double heuristics = handler.distanceTo(childLocation, end);
-
-                //Distance From start
-                double distanceFromStart = currentNode.distanceFromStart + stepSize;
-
-                //Total Cost
-                double totalCost = heuristics + distanceFromStart;
 
                 //Check if inNoFlyZone
                 boolean inNoFlyZone = false;
@@ -231,7 +176,7 @@ public class PathCharter {
                     continue;
                 }
 
-                Node tempChildNode = new Node(childLocation, currentNode, heuristics, angleFromParent, distanceFromStart, totalCost);
+                Node tempChildNode = new Node(childLocation, currentNode, heuristics, angleFromParent);
                 childNodes.add(tempChildNode);
             }
 
@@ -311,12 +256,7 @@ public class PathCharter {
         return new LngLat(closestX,closestY);
     }
 
-    private record Node(LngLat location
-            , Node parent
-            , double heuristics
-            , double angleFromParent
-            , double distanceFromStart
-            , double totalCost) {
+    private record Node(LngLat location, Node parent, double heuristics, double angleFromParent) {
     }
     private record PathPoint(LngLat location, double angleFromParent) {
     }
