@@ -11,11 +11,11 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class PathCharter {
-    public static final LngLat appleton = new LngLat(-3.186874, 55.944494);
-    public static final NamedRegion central = GetDataFromRest.getCentralAreaData();
-    public static final NamedRegion[] noFlyZones = GetDataFromRest.getNoFlyZones();
-    public static final LngLatHandler handler = new LngLatHandler();
-    public static final double maxMoveDistance = 0.00015;
+    private static final LngLat appleton = new LngLat(-3.186874, 55.944494);
+    private static final NamedRegion central = GetDataFromRest.getCentralAreaData();
+    private static final NamedRegion[] noFlyZones = GetDataFromRest.getNoFlyZones();
+    private static final LngLatHandler handler = new LngLatHandler();
+    private static final double maxMoveDistance = 0.00015;
 
     //totalMoves is a method that gets all the moves the drone will make on a given day
     public static Move[] totalMoves(Order[] ordersToChart) {
@@ -42,7 +42,7 @@ public class PathCharter {
         return orderMovesList.toArray(new Move[0]);
     }
 
-    public static Move pptoMove (Order order, LngLat first, double angle, LngLat second){
+    private static Move pptoMove (Order order, LngLat first, double angle, LngLat second){
         //Order Number
         String orderNumber = order.getOrderNo();
 
@@ -62,7 +62,7 @@ public class PathCharter {
                 , (float)secondLat);
     }
 
-    public static PathPoint[] fullPath (Order validOrder, LngLat startPoint){
+    private static PathPoint[] fullPath (Order validOrder, LngLat startPoint){
 
         Restaurant orderRestaurant = OrderValidator.findPizzaRestaurant(validOrder.getPizzasInOrder()[0], GetDataFromRest.getRestaurantsData());
         LngLat restLocation = Objects.requireNonNull(orderRestaurant).location();
@@ -153,7 +153,7 @@ public class PathCharter {
     }
 
     //Refine the path so that the distance between each node is 0.00015
-    public static PathPoint[] fullyRefine(PathPoint[] unrefinedPath, LngLat end) {
+    private static PathPoint[] fullyRefine(PathPoint[] unrefinedPath, LngLat end) {
 
         List<PathPoint> refinedPath = new ArrayList<>();
 
@@ -197,7 +197,7 @@ public class PathCharter {
     }
 
     //A star algorithm used to evaluate the fastest path.
-    public static PathPoint[] AstarAlg (LngLat start, LngLat end, double stepSize){
+    private static PathPoint[] AstarAlg (LngLat start, LngLat end, double stepSize){
 
         //Distance between two nodes must always be a multiple of 0.00015
         stepSize = Math.ceil(stepSize/ maxMoveDistance) * maxMoveDistance;
@@ -312,7 +312,7 @@ public class PathCharter {
     }
 
     //Check if path between two nodes is clear, not within noFlyZones
-    public static boolean isPathClear(LngLat start, LngLat end) {
+    private static boolean isPathClear(LngLat start, LngLat end) {
         double stepSize = 0.000005;
 
         double distance = handler.distanceTo(start, end);
@@ -333,7 +333,7 @@ public class PathCharter {
     }
 
     //Get the central edge closest to restaurant
-    public static LngLat closestEdge (LngLat restaurantLocation){
+    private static LngLat closestEdge (LngLat restaurantLocation){
 
         //Check if starting point is already in central
         if(handler.isInCentralArea(restaurantLocation,central)){
@@ -357,7 +357,7 @@ public class PathCharter {
         return new LngLat(closestX,closestY);
     }
 
-    public static LngLat nextPositionAStar(LngLat startPosition, double angle, double stepSize) {
+    private static LngLat nextPositionAStar(LngLat startPosition, double angle, double stepSize) {
 
         if (angle == 999){
             return startPosition;
@@ -369,7 +369,7 @@ public class PathCharter {
         return new LngLat(nextX, nextY);
     }
 
-    public static double calculateBearing(LngLat start, LngLat end) {
+    private static double calculateBearing(LngLat start, LngLat end) {
 
         if(new LngLatHandler().distanceTo(start,end) < 0.00015){
             return 999;
@@ -402,12 +402,12 @@ public class PathCharter {
 //        return new LngLat(round(lng), round(lat));
 //
 //    }
-    public record Node(LngLat location
+    private record Node(LngLat location
             , Node parent
             , double heuristics
             , double distanceFromStart
             , double totalCost) {
     }
-    public record PathPoint(LngLat location, double angleFromParent) {
+    private record PathPoint(LngLat location, double angleFromParent) {
     }
 }
