@@ -70,7 +70,7 @@ public class CreateJsonDocuments {
             // Write the coordinates from the 'path' array
             for (int i = 0; i < path.length; i++) {
                 Move move = path[i];
-                String formattedCoordinates = String.format("[%.10f,%.10f]", move.fromLng(), move.fromLat());
+                String formattedCoordinates = String.format("[%.16f,%.16f]", move.fromLng(), move.fromLat());
                 geojson.write(formattedCoordinates);
 
                 if (i < path.length - 1) {
