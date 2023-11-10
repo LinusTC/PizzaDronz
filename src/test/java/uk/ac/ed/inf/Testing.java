@@ -93,7 +93,7 @@ public class Testing {
 //        System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
 
 //        //Test to get Moves
-//        LocalDate date = LocalDate.of(2023,9,7);
+//        LocalDate date = LocalDate.of(2023,9,1);
 //        Order[] allOrdersDate = GetDataFromRest.getOrdersOnDay(date);
 //        Restaurant[] restaurantData = GetDataFromRest.getRestaurantsData();
 //        for (Order order: allOrdersDate){
@@ -125,9 +125,18 @@ public class Testing {
 //                break;
 //            }
 //        }
-//        System.out.println(Arrays.toString(path));
+//
+//        boolean allAnglesAreValid = true;
+//        for (Move move : path) {
+//            double angle = move.angle();
+//            // Check if the angle is either a multiple of 22.5 or 999
+//            if (Math.abs(angle) > 1e-6 && (Math.abs(angle % 22.5) > 1e-6 && Math.abs(angle % 999) > 1e-6)) {
+//                allAnglesAreValid = false;
+//                break;
+//            }
+//        }
+//        System.out.println("All angles are either multiples of 22.5 or 999: " + allAnglesAreValid);
 //        System.out.println("All values are either 0.00015 or 0: " + allValuesAreValid);
-//        System.out.println(allValuesAreValid);
 
 //        LocalDate date = LocalDate.of(2023,9,1);
 //        LngLat appleton = new LngLat(-3.1869, 	55.9445);
