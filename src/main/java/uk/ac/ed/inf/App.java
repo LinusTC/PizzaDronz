@@ -12,6 +12,10 @@ public class App
     public static void main(String[] args){
         final long startTime = System.nanoTime();
 
+//        if(args.length != 2){
+//            System.out.println("Please input date and url only");
+//            System.exit(0);
+//        }
 //        String dateInput = args[0];
 //        String urlInput = args[1];
 
