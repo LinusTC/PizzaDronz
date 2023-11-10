@@ -53,7 +53,7 @@ public class App
         CreateJsonDocuments.createDeliveries(date, allOrdersDate);
 
         final long duration = System.nanoTime() - startTime;
-        System.out.println(duration/1000000000);
+        System.out.println("Runtime: " + duration/1000000000 + " seconds");
     }
 
     //Check if input date is valid

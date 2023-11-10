@@ -311,7 +311,7 @@ public class PathCharter {
 
     //Check if path between two nodes is clear, not within noFlyZones
     private static boolean isPathClear(LngLat start, LngLat end) {
-        double stepSize = 0.000005;
+        double stepSize = 0.00001;
 
         double distance = handler.distanceTo(start, end);
 
