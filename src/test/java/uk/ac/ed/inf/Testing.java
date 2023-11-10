@@ -92,9 +92,17 @@ public class Testing {
 //        System.out.println(handler.isInCentralArea(sampleInCenter, getCentralAreaData()));
 //        System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
 
-
-//        System.out.println(path.length);
+//        //Test to get Moves
+//        LocalDate date = LocalDate.of(2023,9,7);
+//        Order[] allOrdersDate = GetDataFromRest.getOrdersOnDay(date);
+//        Restaurant[] restaurantData = GetDataFromRest.getRestaurantsData();
+//        for (Order order: allOrdersDate){
+//            new OrderValidator().validateOrder(order, restaurantData);
+//        }
+//        Order[] validOrdersDate = OrderValidator.filterValidOrders(allOrdersDate);
+//        Move[] path = PathCharter.totalMoves(validOrdersDate);
 //
+//        System.out.println(path.length);
 //        double[] distances = new double[path.length - 1];
 //
 //        for (int i = 1; i < path.length; i++) {
@@ -105,7 +113,7 @@ public class Testing {
 //            double fromLat2 = path[i].fromLat();
 //
 //            double distance = new LngLatHandler().distanceTo(new LngLat(fromLng1, fromLat1), new LngLat(fromLng2, fromLat2));
-//
+//            distances[i - 1] = distance;
 //            System.out.println("[" + fromLng1 + "," + fromLat1 + "] to [" + fromLng2 + "," + fromLat2 + "], Distance: " + distance);
 //        }
 //
@@ -119,13 +127,13 @@ public class Testing {
 //        }
 //        System.out.println(Arrays.toString(path));
 //        System.out.println("All values are either 0.00015 or 0: " + allValuesAreValid);
-
+//        System.out.println(allValuesAreValid);
 
 //        LocalDate date = LocalDate.of(2023,9,1);
 //        LngLat appleton = new LngLat(-3.1869, 	55.9445);
 //        LngLat rest = new LngLat(-3.1913, 55.9455);
 //        Order[] ordersOnDate = getOrdersOnDay(date);
-//        Order order = ordersOnDate[3];
+//        Order order = ordersOnDate[1];
 //
 //        double step = new LngLatHandler().distanceTo(appleton, rest)/3;
 //        PathCharter.PathPoint[] un = PathCharter.AstarAlg(appleton,rest, step);
@@ -141,9 +149,6 @@ public class Testing {
 //        for (PathCharter.PathPoint point: refined2){
 //            System.out.println("[" + point.location().lng() + "," + point.location().lat() + "],");
 //        }
-//
-//        LngLat temp = new LngLat(-3.1912955655638755,55.945375300759984);
-//        System.out.println(new LngLatHandler().isCloseTo(temp, rest));
 
     }
 }

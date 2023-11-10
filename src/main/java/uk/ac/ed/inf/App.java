@@ -10,11 +10,13 @@ import java.time.format.DateTimeFormatter;
 public class App
 {
     public static void main(String[] args){
-        String dateInput = args[0];
-        String urlInput = args[1];
+        final long startTime = System.nanoTime();
 
-//        String dateInput = "2023-09-04";
-//        String urlInput = "https://ilp-rest.azurewebsites.net";
+//        String dateInput = args[0];
+//        String urlInput = args[1];
+
+        String dateInput = "2023-09-01";
+        String urlInput = "https://ilp-rest.azurewebsites.net";
 
         if (!validDate(dateInput)){
             System.out.println("Invalid date format. Please use the format 'yyyy-MM-dd'.");
@@ -49,6 +51,9 @@ public class App
         CreateJsonDocuments.createFlightPath(date, path);
         CreateJsonDocuments.createDrone(date,path);
         CreateJsonDocuments.createDeliveries(date, allOrdersDate);
+
+        final long duration = System.nanoTime() - startTime;
+        System.out.println(duration/1000000000);
     }
 
     //Check if input date is valid

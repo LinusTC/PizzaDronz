@@ -103,7 +103,7 @@ public class PathCharter {
 
             //12 nodes for start to edge, 3 only for edge to rest.
             double stepSizeToEdge = handler.distanceTo(startPoint, edge)/12;
-            double stepSizeToRest = handler.distanceTo(edge, restLocation)/3;
+            double stepSizeToRest = handler.distanceTo(edge, restLocation)/12;
 
             //Appleton to edge
             PathPoint[] unrefinedPt1 = AstarAlg(startPoint,edge, stepSizeToEdge);
@@ -111,17 +111,17 @@ public class PathCharter {
             PathPoint[] pt1 = fullyRefine(unrefinedPt1, edge);
 
             //Edge to restaurant
-            PathPoint[] unrefinedPt2 = AstarAlg(pt1[pt1.length - 1].location, restLocation, stepSizeToEdge);
+            PathPoint[] unrefinedPt2 = AstarAlg(edge, restLocation, stepSizeToRest);
             assert unrefinedPt2 != null;
             PathPoint[] pt2 = fullyRefine(unrefinedPt2, restLocation);
 
             //Restaurant back to edge
-            PathPoint[] unrefinedPt3 = AstarAlg(pt2[pt2.length - 1].location, edge, stepSizeToEdge);
+            PathPoint[] unrefinedPt3 = AstarAlg(restLocation, edge, stepSizeToRest);
             assert unrefinedPt3 != null;
             PathPoint[] pt3 = fullyRefine(unrefinedPt3, edge);
 
             //Edge to appleton
-            PathPoint[] unrefinedPt4 = AstarAlg(pt3[pt3.length - 1].location, appleton, stepSizeToRest);
+            PathPoint[] unrefinedPt4 = AstarAlg(pt3[pt3.length - 1].location, appleton, stepSizeToEdge);
             assert unrefinedPt4 != null;
             PathPoint[] pt4 = fullyRefine(unrefinedPt4, appleton);
 
