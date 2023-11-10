@@ -92,19 +92,7 @@ public class Testing {
 //        System.out.println(handler.isInCentralArea(sampleInCenter, getCentralAreaData()));
 //        System.out.println(handler.isInCentralArea(sampleNotInCenter, getCentralAreaData()));
 
-//        //test to get moves
-//        LocalDate date = LocalDate.of(2023,9,1);
-//        Order[] ordersOnDate = getOrdersOnDay(date);
-//
-//        for (Order order: ordersOnDate){
-//            new OrderValidator().validateOrder(order, restaurants);
-//        }
-//        Order[] validOrdersDate = OrderValidator.filterValidOrders(ordersOnDate);
-//
-//        Move[] path = PathCharter.totalMoves(validOrdersDate);
-//        for(Move move: path){
-//            System.out.println("[" + move.fromLng() + "," + move.fromLat() + "],");
-//        }
+
 //        System.out.println(path.length);
 //
 //        double[] distances = new double[path.length - 1];
@@ -153,6 +141,10 @@ public class Testing {
 //        for (PathCharter.PathPoint point: refined2){
 //            System.out.println("[" + point.location().lng() + "," + point.location().lat() + "],");
 //        }
+//
+//        LngLat temp = new LngLat(-3.1912955655638755,55.945375300759984);
+//        System.out.println(new LngLatHandler().isCloseTo(temp, rest));
+
     }
 }
 
