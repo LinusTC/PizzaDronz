@@ -14,7 +14,7 @@ public class App
 //        String dateInput = args[0];
 //        String urlInput = args[1];
 
-        String dateInput = "2023-09-07";
+        String dateInput = "2023-09-01";
         String urlInput = "https://ilp-rest.azurewebsites.net";
 
         if (!validDate(dateInput)){
