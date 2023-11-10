@@ -10,11 +10,11 @@ import java.time.format.DateTimeFormatter;
 public class App
 {
     public static void main(String[] args){
-
+        final long startTime = System.nanoTime();
 //        String dateInput = args[0];
 //        String urlInput = args[1];
 
-        String dateInput = "2023-09-01";
+        String dateInput = "2023-09-07";
         String urlInput = "https://ilp-rest.azurewebsites.net";
 
         if (!validDate(dateInput)){
@@ -50,6 +50,10 @@ public class App
         CreateJsonDocuments.createFlightPath(date, path);
         CreateJsonDocuments.createDrone(date,path);
         CreateJsonDocuments.createDeliveries(date, allOrdersDate);
+
+        final long duration = System.nanoTime() - startTime;
+
+        System.out.println(duration/1000000000);
     }
 
     //Check if input date is valid
