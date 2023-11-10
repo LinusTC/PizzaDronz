@@ -13,15 +13,12 @@ import java.util.stream.Stream;
 
 public class PathCharter {
     public static final LngLat appleton = new LngLat(-3.186874, 55.944494);
-    //Get Central
     public static final NamedRegion central = GetDataFromRest.getCentralAreaData();
-    //Get noFlyZones from rest
     public static final NamedRegion[] noFlyZones = GetDataFromRest.getNoFlyZones();
-
     public static final LngLatHandler handler = new LngLatHandler();
-
     public static final double maxMoveDistance = 0.00015;
 
+    //totalMoves is a method that gets all the moves the drone will make on a given day
     public static Move[] totalMoves(Order[] ordersToChart) {
         List<Move> orderMovesList = new ArrayList<>();
 
@@ -37,7 +34,7 @@ public class PathCharter {
                 if(next.equals(current)){
                     angle = 999;
                 }
-                orderMovesList.add(pptoMove(order, roundLngLat(current.location), angle, roundLngLat(next.location)));
+                orderMovesList.add(pptoMove(order, current.location, angle, next.location));
             }
 
             startPoint = orderPath[orderPath.length - 1 ].location;
@@ -73,8 +70,8 @@ public class PathCharter {
 
         //If restaurant is in central, find path
         if (handler.isInCentralArea(restLocation, central)){
-
-            double stepSize = handler.distanceTo(startPoint, restLocation)/6;
+            //12 nodes is a good compromise between optimal and efficient pathFinding
+            double stepSize = handler.distanceTo(startPoint, restLocation)/12;
 
             PathPoint[] unrefinedPathToRest = AstarAlg(startPoint, restLocation, stepSize);
             PathPoint[] pathToRest = fullyRefine(unrefinedPathToRest, restLocation);
@@ -82,30 +79,48 @@ public class PathCharter {
             PathPoint[] unrefinedPathToAT = AstarAlg(pathToRest[pathToRest.length-1].location, appleton, stepSize);
             PathPoint[] restToAT = fullyRefine(unrefinedPathToAT, appleton);
 
-            validOrder.setOrderStatus(OrderStatus.DELIVERED);
-            return Stream.of(pathToRest, restToAT).filter(Objects::nonNull)
+            PathPoint[] fullPath = Stream.of(pathToRest, restToAT).filter(Objects::nonNull)
                     .flatMap(Arrays::stream)
                     .toArray(PathPoint[]::new);
+
+            for(int i = 1; i < fullPath.length;i++){
+                LngLat start = fullPath[i - 1].location;
+                LngLat end = fullPath[i].location;
+
+                double angle = calculateBearing(start, end);
+
+                fullPath[i] = new PathPoint(fullPath[i].location, angle);
+            }
+
+            validOrder.setOrderStatus(OrderStatus.DELIVERED);
+            return fullPath;
         }
 
+        //Go to edge restaurant is closest then go directly to restaurant from edge
         else{
-            //Go to edge restaurant is closest then go directly to restaurant from edge
             LngLat edge = closestEdge(restLocation);
-            double stepSizeToEdge = handler.distanceTo(startPoint, edge)/6;
+
+            //12 nodes for start to edge, 3 only for edge to rest.
+            double stepSizeToEdge = handler.distanceTo(startPoint, edge)/12;
             double stepSizeToRest = handler.distanceTo(edge, restLocation)/3;
 
+            //Appleton to edge
             PathPoint[] unrefinedPt1 = AstarAlg(startPoint,edge, stepSizeToEdge);
             PathPoint[] pt1 = fullyRefine(unrefinedPt1, edge);
 
+            //Edge to restaurant
             PathPoint[] unrefinedPt2 = AstarAlg(pt1[pt1.length - 1].location, restLocation, stepSizeToEdge);
             PathPoint[] pt2 = fullyRefine(unrefinedPt2, restLocation);
 
+            //Restaurant back to edge
             PathPoint[] unrefinedPt3 = AstarAlg(pt2[pt2.length - 1].location, edge, stepSizeToEdge);
             PathPoint[] pt3 = fullyRefine(unrefinedPt3, edge);
 
+            //Edge to appleton
             PathPoint[] unrefinedPt4 = AstarAlg(pt3[pt3.length - 1].location, appleton, stepSizeToRest);
             PathPoint[] pt4 = fullyRefine(unrefinedPt4, appleton);
 
+            //Connect the two arrays with edges so that the drone doesn't stop when it reaches the edge
             assert pt2 != null;
             if (pt2.length > 1) {
                 pt2 = Arrays.copyOfRange(pt2, 1, pt2.length);
@@ -116,16 +131,33 @@ public class PathCharter {
             }
 
             validOrder.setOrderStatus(OrderStatus.DELIVERED);
-            return Stream.of(pt1, pt2, pt3, pt4)
+            PathPoint[] fullPath = Stream.of(pt1, pt2, pt3, pt4)
                     .flatMap(Arrays::stream)
                     .toArray(PathPoint[]::new);
+
+            for(int i = 1; i < fullPath.length;i++){
+                LngLat start = fullPath[i - 1].location;
+                LngLat end = fullPath[i].location;
+
+                double angle = calculateBearing(start, end);
+
+                fullPath[i] = new PathPoint(fullPath[i].location, angle);
+            }
+
+            return fullPath;
 
         }
     }
 
+    //Refine the path so that the distance between each node is 0.00015
     public static PathPoint[] fullyRefine(PathPoint[] unrefinedPath, LngLat end) {
+
         List<PathPoint> refinedPath = new ArrayList<>();
+
+        // Add the first point of the unrefined path to the refined path
         refinedPath.add(unrefinedPath[0]);
+
+        //Iterate through each node within unrefinedPath
         for(int i = 1; i < unrefinedPath.length; i++){
             LngLat next = unrefinedPath[i].location;
             LngLat curr = unrefinedPath[i-1].location;
@@ -143,17 +175,29 @@ public class PathCharter {
             }
         }
 
+        // Use an A* algorithm to find a subPath from the end of the unrefined path to the final destination (end)
         LngLat unrefinedPathEnd = unrefinedPath[unrefinedPath.length - 1].location;
         PathPoint[] subPathLast = AstarAlg(unrefinedPathEnd, end, maxMoveDistance);
-        refinedPath.addAll(Arrays.asList(subPathLast));
+
+        for (int j = 1; j < subPathLast.length; j++) {
+            LngLat subCurr = subPathLast[j].location;
+            LngLat subPrev = subPathLast[j - 1].location;
+
+            if (handler.distanceTo(subPrev, subCurr) >= 0.00015) {
+                if (!subCurr.equals(refinedPath.get(refinedPath.size() - 1).location)) {
+                    refinedPath.add(subPathLast[j]);
+                }
+            }
+        }
 
         return refinedPath.toArray(new PathPoint[0]);
     }
 
-
+    //A star algorithm used to evaluate the fastest path.
     public static PathPoint[] AstarAlg (LngLat start, LngLat end, double stepSize){
 
-        stepSize = Math.ceil(stepSize/ 0.00015) * 0.00015;
+        //Distance between two nodes must always be a multiple of 0.00015
+        stepSize = Math.ceil(stepSize/ maxMoveDistance) * maxMoveDistance;
 
         List<Node> openList = new ArrayList<>();
         List<Node> closedList = new ArrayList<>();
@@ -266,7 +310,7 @@ public class PathCharter {
 
     //Check if path between two nodes is clear, not within noFlyZones
     public static boolean isPathClear(LngLat start, LngLat end) {
-        double stepSize = 0.00001;
+        double stepSize = 0.000005;
 
         double distance = handler.distanceTo(start, end);
 
@@ -323,9 +367,11 @@ public class PathCharter {
     }
 
     public static double calculateBearing(LngLat start, LngLat end) {
+
         if(new LngLatHandler().distanceTo(start,end) < 0.00015){
             return 999;
         }
+
         double lat1 = Math.toRadians(start.lat());
         double lat2 = Math.toRadians(end.lat());
         double deltaLng = Math.toRadians(end.lng() - start.lng());
@@ -337,22 +383,22 @@ public class PathCharter {
 
         double roundedBearing = Math.round(bearing / 22.5) * 22.5;
 
-        return (roundedBearing - 90 + 360) % 360;
+        return (90 - roundedBearing + 360) % 360;
     }
 
-    private static double round(double value) {
-        BigDecimal bd = BigDecimal.valueOf(value);
-        bd = bd.setScale(5, RoundingMode.HALF_UP);
-        return bd.doubleValue();
-    }
-
-    private static LngLat roundLngLat(LngLat value) {
-        double lat = value.lat();
-        double lng = value.lng();
-
-        return new LngLat(round(lng), round(lat));
-    }
-
+//    private static double round(double value) {
+//        BigDecimal bd = BigDecimal.valueOf(value);
+//        bd = bd.setScale(5, RoundingMode.HALF_UP);
+//        return bd.doubleValue();
+//    }
+//
+//    private static LngLat roundLngLat (LngLat lngLat){
+//        double lng = lngLat.lng();
+//        double lat = lngLat.lat();
+//
+//        return new LngLat(round(lng), round(lat));
+//
+//    }
     public record Node(LngLat location
             , Node parent
             , double heuristics
