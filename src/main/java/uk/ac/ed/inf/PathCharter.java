@@ -100,8 +100,6 @@ public class PathCharter {
         //Go to edge restaurant is closest then go directly to restaurant from edge
         else{
             LngLat edge = closestEdge(restLocation);
-
-            //12 nodes for start to edge, 3 only for edge to rest.
             double stepSizeToEdge = handler.distanceTo(startPoint, edge)/12;
             double stepSizeToRest = handler.distanceTo(edge, restLocation)/12;
 
@@ -111,14 +109,14 @@ public class PathCharter {
             PathPoint[] pt1 = fullyRefine(unrefinedPt1, edge);
 
             //Edge to restaurant
-            PathPoint[] unrefinedPt2 = AstarAlg(edge, restLocation, stepSizeToRest);
+            PathPoint[] unrefinedPt2 = AstarAlg(pt1[pt1.length - 1].location, restLocation, stepSizeToRest);
             assert unrefinedPt2 != null;
             PathPoint[] pt2 = fullyRefine(unrefinedPt2, restLocation);
 
             //Restaurant back to edge
-            PathPoint[] unrefinedPt3 = AstarAlg(restLocation, edge, stepSizeToRest);
+            PathPoint[] unrefinedPt3 = AstarAlg(pt2[pt2.length - 1].location, pt2[0].location, stepSizeToRest);
             assert unrefinedPt3 != null;
-            PathPoint[] pt3 = fullyRefine(unrefinedPt3, edge);
+            PathPoint[] pt3 = fullyRefine(unrefinedPt3, pt2[0].location);
 
             //Edge to appleton
             PathPoint[] unrefinedPt4 = AstarAlg(pt3[pt3.length - 1].location, appleton, stepSizeToEdge);
