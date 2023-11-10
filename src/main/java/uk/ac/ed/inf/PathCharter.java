@@ -5,7 +5,6 @@ import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.ilp.data.Restaurant;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -74,9 +73,11 @@ public class PathCharter {
             double stepSize = handler.distanceTo(startPoint, restLocation)/12;
 
             PathPoint[] unrefinedPathToRest = AstarAlg(startPoint, restLocation, stepSize);
+            assert unrefinedPathToRest != null;
             PathPoint[] pathToRest = fullyRefine(unrefinedPathToRest, restLocation);
 
             PathPoint[] unrefinedPathToAT = AstarAlg(pathToRest[pathToRest.length-1].location, appleton, stepSize);
+            assert unrefinedPathToAT != null;
             PathPoint[] restToAT = fullyRefine(unrefinedPathToAT, appleton);
 
             PathPoint[] fullPath = Stream.of(pathToRest, restToAT).filter(Objects::nonNull)
@@ -106,26 +107,28 @@ public class PathCharter {
 
             //Appleton to edge
             PathPoint[] unrefinedPt1 = AstarAlg(startPoint,edge, stepSizeToEdge);
+            assert unrefinedPt1 != null;
             PathPoint[] pt1 = fullyRefine(unrefinedPt1, edge);
 
             //Edge to restaurant
             PathPoint[] unrefinedPt2 = AstarAlg(pt1[pt1.length - 1].location, restLocation, stepSizeToEdge);
+            assert unrefinedPt2 != null;
             PathPoint[] pt2 = fullyRefine(unrefinedPt2, restLocation);
 
             //Restaurant back to edge
             PathPoint[] unrefinedPt3 = AstarAlg(pt2[pt2.length - 1].location, edge, stepSizeToEdge);
+            assert unrefinedPt3 != null;
             PathPoint[] pt3 = fullyRefine(unrefinedPt3, edge);
 
             //Edge to appleton
             PathPoint[] unrefinedPt4 = AstarAlg(pt3[pt3.length - 1].location, appleton, stepSizeToRest);
+            assert unrefinedPt4 != null;
             PathPoint[] pt4 = fullyRefine(unrefinedPt4, appleton);
 
             //Connect the two arrays with edges so that the drone doesn't stop when it reaches the edge
-            assert pt2 != null;
             if (pt2.length > 1) {
                 pt2 = Arrays.copyOfRange(pt2, 1, pt2.length);
             }
-            assert pt4 != null;
             if (pt4.length > 1) {
                 pt4 = Arrays.copyOfRange(pt4, 1, pt4.length);
             }
@@ -164,7 +167,7 @@ public class PathCharter {
 
             PathPoint[] subPath = AstarAlg(curr, next, maxMoveDistance);
 
-            for (int j = 1; j < subPath.length ;j++){
+            for (int j = 1; j < Objects.requireNonNull(subPath).length ; j++){
                 LngLat subCurr = subPath[j].location;
                 LngLat subPrev = subPath[j-1].location;
 
@@ -179,7 +182,7 @@ public class PathCharter {
         LngLat unrefinedPathEnd = unrefinedPath[unrefinedPath.length - 1].location;
         PathPoint[] subPathLast = AstarAlg(unrefinedPathEnd, end, maxMoveDistance);
 
-        for (int j = 1; j < subPathLast.length; j++) {
+        for (int j = 1; j < Objects.requireNonNull(subPathLast).length; j++) {
             LngLat subCurr = subPathLast[j].location;
             LngLat subPrev = subPathLast[j - 1].location;
 
