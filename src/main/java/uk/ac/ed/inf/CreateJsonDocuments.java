@@ -65,21 +65,19 @@ public class CreateJsonDocuments {
         try {
             FileWriter geojson = new FileWriter("resultfiles/drone-" + date + ".geojson");
 
-            // Start building the GeoJSON structure
             geojson.write("{ \"type\": \"Feature\", \"properties\": {}, \"geometry\": { \"coordinates\": [");
 
             // Write the coordinates from the 'path' array
             for (int i = 0; i < path.length; i++) {
                 Move move = path[i];
-                geojson.write("[" + move.fromLng() + "," + move.fromLat() + "]");
+                String formattedCoordinates = String.format("[%.10f,%.10f]", move.fromLng(), move.fromLat());
+                geojson.write(formattedCoordinates);
 
-                // Add a comma if it's not the last coordinate
                 if (i < path.length - 1) {
                     geojson.write(",");
                 }
             }
 
-            // Close the GeoJSON structure
             geojson.write("], \"type\": \"LineString\" } }");
 
             geojson.close();
@@ -87,4 +85,5 @@ public class CreateJsonDocuments {
             throw new RuntimeException(e);
         }
     }
+
 }
