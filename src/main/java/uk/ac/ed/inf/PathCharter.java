@@ -68,7 +68,7 @@ public class PathCharter {
         //If restaurant is in central, find path
         if (handler.isInCentralArea(restLocation, central)){
             //12 nodes is a good compromise between optimal and efficient pathFinding
-            double stepSize = handler.distanceTo(startPoint, restLocation)/12;
+            double stepSize = handler.distanceTo(startPoint, restLocation)/6;
 
             PathPoint[] unrefinedPathToRest = AstarAlg(startPoint, restLocation, stepSize);
             assert unrefinedPathToRest != null;
@@ -98,8 +98,8 @@ public class PathCharter {
         //Go to edge restaurant is closest then go directly to restaurant from edge
         else{
             LngLat edge = closestEdge(restLocation);
-            double stepSizeToEdge = handler.distanceTo(startPoint, edge)/12;
-            double stepSizeToRest = handler.distanceTo(edge, restLocation)/12;
+            double stepSizeToEdge = handler.distanceTo(startPoint, edge)/6;
+            double stepSizeToRest = handler.distanceTo(edge, restLocation)/6;
 
             //Appleton to edge
             PathPoint[] unrefinedPt1 = AstarAlg(startPoint,edge, stepSizeToEdge);
