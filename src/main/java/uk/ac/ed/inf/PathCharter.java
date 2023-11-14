@@ -5,8 +5,6 @@ import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.ilp.data.Restaurant;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -387,19 +385,6 @@ public class PathCharter {
         return (90 - roundedBearing + 360) % 360;
     }
 
-//    private static double round(double value) {
-//        BigDecimal bd = BigDecimal.valueOf(value);
-//        bd = bd.setScale(5, RoundingMode.HALF_UP);
-//        return bd.doubleValue();
-//    }
-//
-//    private static LngLat roundLngLat (LngLat lngLat){
-//        double lng = lngLat.lng();
-//        double lat = lngLat.lat();
-//
-//        return new LngLat(round(lng), round(lat));
-//
-//    }
     private record Node(LngLat location
             , Node parent
             , double heuristics
