@@ -67,7 +67,6 @@ public class PathCharter {
 
         //If restaurant is in central, find path
         if (handler.isInCentralArea(restLocation, central)){
-            //12 nodes is a good compromise between optimal and efficient pathFinding
             double stepSize = handler.distanceTo(startPoint, restLocation)/6;
 
             PathPoint[] unrefinedPathToRest = AstarAlg(startPoint, restLocation, stepSize);
