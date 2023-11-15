@@ -330,26 +330,46 @@ public class PathCharter {
     //Get the central edge closest to restaurant
     private static LngLat closestEdge (LngLat restaurantLocation){
 
+        LngLat closestEdge = null;
+
         //Check if starting point is already in central
         if(handler.isInCentralArea(restaurantLocation,central)){
             return restaurantLocation;
         }
 
-        double x = restaurantLocation.lng();
-        double y = restaurantLocation.lat();
-
-        //Using the following code to find max/min lng-lat values.
         LngLat[] vertices = central.vertices();
-        double xMin = vertices[0].lng();
-        double xMax = vertices[2].lng();
-        double yMin = vertices[2].lat();
-        double yMax = vertices[0].lat();
+        double a, b, c, d, dot, lenSq, cosTheta, minDist = 100000, dist;
+        int n = vertices.length;
 
-        //Finds the closest point on central box
-        double closestX = Math.min(Math.max(x, xMin), xMax);
-        double closestY = Math.min(Math.max(y, yMin), yMax);
+        for (int i = 0, j = n - 1; i < n; j = i++) {
 
-        return new LngLat(closestX,closestY);
+            a = restaurantLocation.lng() - vertices[i].lng();
+            b = restaurantLocation.lat() - vertices[i].lat();
+            c = vertices[j].lng() - vertices[i].lng();
+            d = vertices[j].lat() - vertices[i].lat();
+            dot = a * c + b * d;
+            lenSq = c * c + d * d;
+            cosTheta = dot / lenSq;
+
+            double lng, lat;
+
+            if (cosTheta < 0 || cosTheta > 1) {
+                lng = (cosTheta < 0) ? vertices[i].lng() : vertices[j].lng();
+                lat = (cosTheta < 0) ? vertices[i].lat() : vertices[j].lat();
+            }
+            else {
+                lng = vertices[i].lng() + cosTheta * c;
+                lat = vertices[i].lat() + cosTheta * d;
+            }
+
+            LngLat temp = new LngLat(lng, lat);
+            dist = handler.distanceTo(restaurantLocation, temp);
+            if (dist < minDist) {
+                closestEdge = temp;
+                minDist = dist;
+            }
+        }
+        return closestEdge;
     }
 
     private static LngLat nextPositionAStar(LngLat startPosition, double angle, double stepSize) {
