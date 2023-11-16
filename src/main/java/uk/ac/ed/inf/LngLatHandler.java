@@ -42,8 +42,8 @@ public class LngLatHandler implements LngLatHandling{
             return startPosition;
         }
 
-        double nextX = round(startPosition.lng() + (.00015 * Math.cos(Math.toRadians(angle))));
-        double nextY = round(startPosition.lat() + (.00015 * Math.sin(Math.toRadians(angle))));
+        double nextX = (startPosition.lng() + (.00015 * Math.cos(Math.toRadians(angle))));
+        double nextY = (startPosition.lat() + (.00015 * Math.sin(Math.toRadians(angle))));
 
         return new LngLat(nextX, nextY);
     }
