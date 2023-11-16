@@ -83,7 +83,7 @@ public class LngLatHandler implements LngLatHandling{
 
     private static double round(double value) {
         BigDecimal bd = BigDecimal.valueOf(value);
-        bd = bd.setScale(6, RoundingMode.HALF_UP);
+        bd = bd.setScale(5, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
 }
