@@ -1,8 +1,7 @@
 package uk.ac.ed.inf;
 
-
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import uk.ac.ed.inf.ilp.data.Order;
 import java.io.File;
 import java.io.FileWriter;
@@ -11,17 +10,17 @@ import java.time.LocalDate;
 
 public class CreateJsonDocuments {
     public static void createDeliveries (LocalDate date, Order[] ordersOnDate) {
-        JSONArray orders = new JSONArray();
+        JsonArray orders = new JsonArray();
 
         for (Order order : ordersOnDate) {
-            JSONObject object = new JSONObject();
+            JsonObject object = new JsonObject();
 
-            object.put("orderNo", order.getOrderNo());
-            object.put("orderStatus", order.getOrderStatus());
-            object.put("orderValidationCode", order.getOrderValidationCode());
-            object.put("costInPence", order.getPriceTotalInPence());
+            object.addProperty("orderNo", order.getOrderNo());
+            object.addProperty("orderStatus", order.getOrderStatus().toString());
+            object.addProperty("orderValidationCode", order.getOrderValidationCode().toString());
+            object.addProperty("costInPence", order.getPriceTotalInPence());
 
-            orders.put(object);
+            orders.add(object);
         }
 
         try {
@@ -35,19 +34,19 @@ public class CreateJsonDocuments {
     }
 
     public static void createFlightPath (LocalDate date, Move[] path) {
-        JSONArray movesOfOrders = new JSONArray();
+        JsonArray movesOfOrders = new JsonArray();
 
         for(Move move: path){
-            JSONObject object = new JSONObject();
+            JsonObject object = new JsonObject();
 
-            object.put("orderNo", move.orderNo());
-            object.put("fromLongitude", move.fromLng());
-            object.put("fromLatitude", move.fromLat());
-            object.put("angle", move.angle());
-            object.put("toLongitude", move.toLng());
-            object.put("toLatitude", move.toLat());
+            object.addProperty("orderNo", move.orderNo());
+            object.addProperty("fromLongitude", move.fromLng());
+            object.addProperty("fromLatitude", move.fromLat());
+            object.addProperty("angle", move.angle());
+            object.addProperty("toLongitude", move.toLng());
+            object.addProperty("toLatitude", move.toLat());
 
-            movesOfOrders.put(object);
+            movesOfOrders.add(object);
         }
 
         try {
