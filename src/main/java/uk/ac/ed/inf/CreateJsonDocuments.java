@@ -1,5 +1,6 @@
 package uk.ac.ed.inf;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import uk.ac.ed.inf.ilp.data.Order;
@@ -25,7 +26,7 @@ public class CreateJsonDocuments {
 
         try {
             FileWriter file = new FileWriter(new File("resultfiles", "deliveries-" + date + ".json"));
-            file.write(orders.toString());
+            file.write((new Gson()).toJson(orders));
             file.close();
 
         } catch (IOException e) {
@@ -51,7 +52,7 @@ public class CreateJsonDocuments {
 
         try {
             FileWriter file = new FileWriter(new File("resultfiles", "flightpath-" + date + ".json"));
-            file.write(movesOfOrders.toString());
+            file.write((new Gson()).toJson(movesOfOrders));
             file.close();
 
         } catch (IOException e) {
