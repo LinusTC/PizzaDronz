@@ -1,4 +1,4 @@
 package uk.ac.ed.inf;
 
-public record Move(String orderNo, float fromLng, float fromLat, float angle, float toLng, float toLat) {
+public record Move(String orderNo, double fromLng, double fromLat, double angle, double toLng, double toLat) {
 }

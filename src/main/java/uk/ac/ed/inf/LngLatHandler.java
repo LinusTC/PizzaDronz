@@ -3,8 +3,6 @@ package uk.ac.ed.inf;
 import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.interfaces.LngLatHandling;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import static uk.ac.ed.inf.GetDataFromRest.*;
 
 public class LngLatHandler implements LngLatHandling{
@@ -20,7 +18,7 @@ public class LngLatHandler implements LngLatHandling{
         double x = (x1-x2);
         double y = (y1-y2);
 
-        return round(Math.sqrt(x*x + y*y));
+        return Math.sqrt(x*x + y*y);
     }
 
     @Override
@@ -79,11 +77,5 @@ public class LngLatHandler implements LngLatHandling{
             }
         }
         return temp;
-    }
-
-    private static double round(double value) {
-        BigDecimal bd = BigDecimal.valueOf(value);
-        bd = bd.setScale(5, RoundingMode.HALF_UP);
-        return bd.doubleValue();
     }
 }

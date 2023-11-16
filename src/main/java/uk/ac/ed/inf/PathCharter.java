@@ -53,14 +53,14 @@ public class PathCharter {
         double secondLat = second.lat();
 
         return new Move(orderNumber
-                , (float)firstLng
-                , (float)firstLat
-                , (float)angle
-                , (float)secondLng
-                , (float)secondLat);
+                , firstLng
+                , firstLat
+                , angle
+                , secondLng
+                , secondLat);
     }
 
-    private static PathPoint[] fullPath (Order validOrder, LngLat startPoint){
+    static PathPoint[] fullPath(Order validOrder, LngLat startPoint){
 
         Restaurant orderRestaurant = OrderValidator.findPizzaRestaurant(validOrder.getPizzasInOrder()[0], GetDataFromRest.getRestaurantsData());
         LngLat restLocation = Objects.requireNonNull(orderRestaurant).location();
@@ -148,51 +148,43 @@ public class PathCharter {
     }
 
     //Refine the path so that the distance between each node is 0.00015
-    private static PathPoint[] fullyRefine(PathPoint[] unrefinedPath, LngLat end) {
+    public static PathPoint[] fullyRefine(PathPoint[] unrefinedPath, LngLat end) {
 
         List<PathPoint> refinedPath = new ArrayList<>();
 
         // Add the first point of the unrefined path to the refined path
         refinedPath.add(unrefinedPath[0]);
+        LngLat curr = refinedPath.get(refinedPath.size() - 1).location;
 
         //Iterate through each node within unrefinedPath
         for(int i = 1; i < unrefinedPath.length; i++){
             LngLat next = unrefinedPath[i].location;
-            LngLat curr = unrefinedPath[i-1].location;
 
             PathPoint[] subPath = AstarAlg(curr, next, maxMoveDistance);
 
-            for (int j = 1; j < Objects.requireNonNull(subPath).length ; j++){
-                LngLat subCurr = subPath[j].location;
-                LngLat subPrev = subPath[j-1].location;
+            refinedPath.addAll(Arrays.asList(subPath).subList(1, Objects.requireNonNull(subPath).length));
 
-                if(handler.distanceTo(subPrev, subCurr) >= 0.00015){
-                    refinedPath.add(subPath[j]);
-                }
-
-            }
+            curr = refinedPath.get(refinedPath.size() - 1).location;
         }
 
         // Use an A* algorithm to find a subPath from the end of the unrefined path to the final destination (end)
-        LngLat unrefinedPathEnd = unrefinedPath[unrefinedPath.length - 1].location;
+        LngLat unrefinedPathEnd = refinedPath.get(refinedPath.size() - 1).location;
         PathPoint[] subPathLast = AstarAlg(unrefinedPathEnd, end, maxMoveDistance);
 
         for (int j = 1; j < Objects.requireNonNull(subPathLast).length; j++) {
             LngLat subCurr = subPathLast[j].location;
-            LngLat subPrev = subPathLast[j - 1].location;
 
-            if (handler.distanceTo(subPrev, subCurr) >= 0.00015) {
-                if (!subCurr.equals(refinedPath.get(refinedPath.size() - 1).location)) {
-                    refinedPath.add(subPathLast[j]);
-                }
+            if (!subCurr.equals(refinedPath.get(refinedPath.size() - 1).location)) {
+                refinedPath.add(subPathLast[j]);
             }
+
         }
 
         return refinedPath.toArray(new PathPoint[0]);
     }
 
     //A star algorithm used to evaluate the fastest path.
-    private static PathPoint[] AstarAlg (LngLat start, LngLat end, double stepSize){
+    static PathPoint[] AstarAlg(LngLat start, LngLat end, double stepSize){
 
         //Distance between two nodes must always be a multiple of 0.00015
         stepSize = Math.ceil(stepSize/ maxMoveDistance) * maxMoveDistance;
@@ -410,6 +402,6 @@ public class PathCharter {
             , double distanceFromStart
             , double totalCost) {
     }
-    private record PathPoint(LngLat location, double angleFromParent) {
+    record PathPoint(LngLat location, double angleFromParent) {
     }
 }
