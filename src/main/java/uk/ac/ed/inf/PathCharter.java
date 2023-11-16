@@ -60,7 +60,7 @@ public class PathCharter {
                 , secondLat);
     }
 
-    static PathPoint[] fullPath(Order validOrder, LngLat startPoint){
+    private static PathPoint[] fullPath(Order validOrder, LngLat startPoint){
 
         Restaurant orderRestaurant = OrderValidator.findPizzaRestaurant(validOrder.getPizzasInOrder()[0], GetDataFromRest.getRestaurantsData());
         LngLat restLocation = Objects.requireNonNull(orderRestaurant).location();
@@ -148,19 +148,20 @@ public class PathCharter {
     }
 
     //Refine the path so that the distance between each node is 0.00015
-    public static PathPoint[] fullyRefine(PathPoint[] unrefinedPath, LngLat end) {
+    private static PathPoint[] fullyRefine(PathPoint[] unrefinedPath, LngLat end) {
 
         List<PathPoint> refinedPath = new ArrayList<>();
 
         // Add the first point of the unrefined path to the refined path
         refinedPath.add(unrefinedPath[0]);
-        LngLat curr = refinedPath.get(refinedPath.size() - 1).location;
+        LngLat curr = refinedPath.get(0).location;
 
         //Iterate through each node within unrefinedPath
         for(int i = 1; i < unrefinedPath.length; i++){
             LngLat next = unrefinedPath[i].location;
 
             PathPoint[] subPath = AstarAlg(curr, next, maxMoveDistance);
+            assert subPath != null;
 
             refinedPath.addAll(Arrays.asList(subPath).subList(1, Objects.requireNonNull(subPath).length));
 

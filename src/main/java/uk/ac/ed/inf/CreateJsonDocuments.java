@@ -41,11 +41,11 @@ public class CreateJsonDocuments {
             JsonObject object = new JsonObject();
 
             object.addProperty("orderNo", move.orderNo());
-            object.addProperty("fromLongitude", move.fromLng());
-            object.addProperty("fromLatitude", move.fromLat());
+            object.addProperty("fromLongitude",(float) move.fromLng());
+            object.addProperty("fromLatitude",(float) move.fromLat());
             object.addProperty("angle", move.angle());
-            object.addProperty("toLongitude", move.toLng());
-            object.addProperty("toLatitude", move.toLat());
+            object.addProperty("toLongitude",(float) move.toLng());
+            object.addProperty("toLatitude",(float) move.toLat());
 
             movesOfOrders.add(object);
         }
