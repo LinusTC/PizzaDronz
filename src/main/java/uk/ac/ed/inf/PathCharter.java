@@ -379,18 +379,18 @@ public class PathCharter {
             return 999;
         }
 
-        double lat1 = Math.toRadians(start.lat());
-        double lat2 = Math.toRadians(end.lat());
-        double deltaLng = Math.toRadians(end.lng() - start.lng());
+        double deltaX = end.lng() - start.lng();
+        double deltaY = end.lat() - start.lat();
 
-        double y = Math.sin(deltaLng) * Math.cos(lat2);
-        double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLng);
+        double angleInRadians = Math.atan2(deltaY, deltaX);
+        double angleInDegrees = Math.toDegrees(angleInRadians);
 
-        double bearing = Math.toDegrees(Math.atan2(y, x));
+        // Ensure the angle is within [0, 360) degrees
+        if (angleInDegrees < 0) {
+            angleInDegrees += 360;
+        }
 
-        double roundedBearing = Math.round(bearing / 22.5) * 22.5;
-
-        return (90 - roundedBearing + 360) % 360;
+        return Math.round(angleInDegrees * 2) / 2.0;
     }
 
     private record Node(LngLat location
