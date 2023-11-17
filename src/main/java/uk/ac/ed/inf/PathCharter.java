@@ -120,7 +120,7 @@ public class PathCharter {
             assert unrefinedPt4 != null;
             PathPoint[] pt4 = fullyRefine(unrefinedPt4, appleton);
 
-            //Connect the two arrays with edges so that the drone doesn't stop when it reaches the edge
+            //Remove the hover move when the drone reaches an edge
             if (pt2.length > 1) {
                 pt2 = Arrays.copyOfRange(pt2, 1, pt2.length);
             }
@@ -367,10 +367,6 @@ public class PathCharter {
 
     private static LngLat nextPositionAStar(LngLat startPosition, double angle, double stepSize) {
 
-        if (angle == 999){
-            return startPosition;
-        }
-
         double nextX = (startPosition.lng() + (stepSize * Math.cos(Math.toRadians(angle))));
         double nextY = (startPosition.lat() + (stepSize * Math.sin(Math.toRadians(angle))));
 
@@ -379,7 +375,7 @@ public class PathCharter {
 
     private static double calculateBearing(LngLat start, LngLat end) {
 
-        if(new LngLatHandler().distanceTo(start,end) < 0.00015){
+        if(start.equals(end)){
             return 999;
         }
 

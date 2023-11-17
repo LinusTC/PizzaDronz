@@ -2,13 +2,14 @@ package uk.ac.ed.inf;
 
 import uk.ac.ed.inf.ilp.data.*;
 import java.time.LocalDate;
+import java.util.Arrays;
 
 public class PathCharterTest {
     public static void main (String[] args) {
         GetDataFromRest.setBaseUrl("https://ilp-rest.azurewebsites.net");
 
         //Test to get Moves
-        LocalDate date = LocalDate.of(2023,9,1);
+        LocalDate date = LocalDate.of(2023,9,3);
         Order[] allOrdersDate = GetDataFromRest.getOrdersOnDay(date);
         Restaurant[] restaurantData = GetDataFromRest.getRestaurantsData();
         for (Order order: allOrdersDate){
@@ -17,7 +18,7 @@ public class PathCharterTest {
         Order[] validOrdersDate = OrderValidator.filterValidOrders(allOrdersDate);
         Move[] path = PathCharter.totalMoves(validOrdersDate);
 
-        System.out.println(path.length);
+        System.out.println(Arrays.toString(path));
         double[] distances = new double[path.length - 1];
 
         for (int i = 1; i < path.length; i++) {
@@ -52,6 +53,8 @@ public class PathCharterTest {
         }
         System.out.println("All angles are either multiples of 22.5 or 999: " + allAnglesAreValid);
         System.out.println("All values are either 0.00015 or 0: " + allValuesAreValid);
+        System.out.println(validOrdersDate.length);
+        System.out.println(path.length);
 
 //        LocalDate date = LocalDate.of(2023,9,1);
 //        LngLat appleton = new LngLat(-3.1870,55.9445);
