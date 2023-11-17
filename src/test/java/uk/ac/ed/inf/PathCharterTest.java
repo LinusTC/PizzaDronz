@@ -82,7 +82,7 @@ public class PathCharterTest {
 
     private boolean validateDistances(double[] distances) {
         for (double distance : distances) {
-            if (Math.abs(distance - 0.00015) > 1e-6 && Math.abs(distance) > 1e-6) {
+            if (Math.abs(distance - 0.00015) > 1e-10 && Math.abs(distance) > 1e-10) {
                 return false;
             }
         }
@@ -92,9 +92,23 @@ public class PathCharterTest {
     private boolean validateAngles(Move[] path) {
         for (Move move : path) {
             double angle = move.angle();
-            if (Math.abs(angle) > 1e-6 && (angle % 22.5 > 1e-9 && angle % 999 > 1e-9)) {
+            if (Math.abs(angle) > 1e-10 && (angle % 22.5 > 1e-10 && angle % 999 > 1e-10)) {
                 return false;
             }
+
+            double fromLng = move.fromLng();
+            double fromLat = move.fromLat();
+            double toLng = move.toLng();
+            double toLat = move.toLat();
+
+            LngLat fromPoint = new LngLat(fromLng, fromLat);
+            LngLat toPoint = new LngLat(toLng,toLat);
+            LngLat predictedPoint = new LngLatHandler().nextPosition(fromPoint,angle);
+
+            if(!predictedPoint.equals(toPoint)){
+                return false;
+            }
+
         }
         return true;
     }
