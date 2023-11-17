@@ -385,7 +385,6 @@ public class PathCharter {
         double angleInRadians = Math.atan2(deltaY, deltaX);
         double angleInDegrees = Math.toDegrees(angleInRadians);
 
-        // Ensure the angle is within [0, 360) degrees
         if (angleInDegrees < 0) {
             angleInDegrees += 360;
         }
