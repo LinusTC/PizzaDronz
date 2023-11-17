@@ -77,7 +77,7 @@ public class PathCharter {
             assert unrefinedPathToAT != null;
             PathPoint[] restToAT = fullyRefine(unrefinedPathToAT, appleton);
 
-            PathPoint[] fullPath = Stream.of(pathToRest, restToAT).filter(Objects::nonNull)
+            PathPoint[] fullPath = Stream.of(pathToRest, restToAT)
                     .flatMap(Arrays::stream)
                     .toArray(PathPoint[]::new);
 
