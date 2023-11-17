@@ -111,9 +111,9 @@ public class PathCharter {
             PathPoint[] pt2 = fullyRefine(unrefinedPt2, restLocation);
 
             //Restaurant back to edge
-            PathPoint[] unrefinedPt3 = AstarAlg(pt2[pt2.length - 1].location, edge, stepSizeToRest);
+            PathPoint[] unrefinedPt3 = AstarAlg(pt2[pt2.length - 1].location, pt2[0].location, stepSizeToRest);
             assert unrefinedPt3 != null;
-            PathPoint[] pt3 = fullyRefine(unrefinedPt3, edge);
+            PathPoint[] pt3 = fullyRefine(unrefinedPt3, pt2[0].location);
 
             //Edge to appleton
             PathPoint[] unrefinedPt4 = AstarAlg(pt3[pt3.length - 1].location, appleton, stepSizeToEdge);
