@@ -53,7 +53,7 @@ public class LngLatHandler implements LngLatHandling{
 
 
     //Point in polygon algorithm found online
-    public static boolean isPointInRegion(LngLat[] vertices, LngLat position){
+    private static boolean isPointInRegion(LngLat[] vertices, LngLat position){
         boolean temp = false;
 
         double x = position.lng();

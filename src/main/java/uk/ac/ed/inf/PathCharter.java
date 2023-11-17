@@ -185,7 +185,7 @@ public class PathCharter {
     }
 
     //A star algorithm used to evaluate the fastest path.
-    static PathPoint[] AstarAlg(LngLat start, LngLat end, double stepSize){
+    private static PathPoint[] AstarAlg(LngLat start, LngLat end, double stepSize){
 
         //Distance between two nodes must always be a multiple of 0.00015
         stepSize = Math.ceil(stepSize/ maxMoveDistance) * maxMoveDistance;
