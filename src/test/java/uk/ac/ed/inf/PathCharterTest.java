@@ -21,7 +21,7 @@ public class PathCharterTest {
         Move[] path = PathCharter.totalMoves(validOrdersDate);
 
         double[] distances = new double[path.length];
-
+        int angleCount = 0;
         for (int i = 0; i < path.length; i++) {
             double fromLng1 = path[i].fromLng();
             double fromLat1 = path[i].fromLat();
@@ -32,12 +32,16 @@ public class PathCharterTest {
             double distance = new LngLatHandler().distanceTo(new LngLat(fromLng1, fromLat1), new LngLat(toLng, toLat));
             distances[i] = distance;
             System.out.println("[" + fromLng1 + "," + fromLat1 + "] to [" + toLng + "," + toLat + "], Distance: " + distance + ", Angle: " + path[i].angle());
+
+            if(path[i].angle() == 999){
+                angleCount += 1;
+            }
         }
 
         boolean allValuesAreValid = true;
 
         for (double distance : distances) {
-            if (Math.abs(distance - 0.00015) > 1e-6 && Math.abs(distance) > 1e-6) {
+            if (Math.abs(distance - 0.00015) > 1e-10 && Math.abs(distance) > 1e-10) {
                 allValuesAreValid = false;
                 break;
             }
@@ -46,16 +50,15 @@ public class PathCharterTest {
         boolean allAnglesAreValid = true;
         for (Move move : path) {
             double angle = move.angle();
-            // Check if the angle is either a multiple of 22.5 or 999
-            if (Math.abs(angle) > 1e-6 && (Math.abs(angle % 22.5) > 1e-6 && Math.abs(angle % 999) > 1e-6)) {
+            if (Math.abs(angle) > 1e-6 && (angle % 22.5 > 1e-9 && angle % 999 > 1e-9)) {
                 allAnglesAreValid = false;
                 break;
             }
         }
         System.out.println("All angles are either multiples of 22.5 or 999: " + allAnglesAreValid);
         System.out.println("All values are either 0.00015 or 0: " + allValuesAreValid);
-        System.out.println(validOrdersDate.length);
-        System.out.println(path.length);
+        System.out.println("Number of angles 999: " + angleCount);
+        System.out.println("Valid number of hovers: " + (validOrdersDate.length == angleCount/2));
 
 //        LocalDate date = LocalDate.of(2023,9,1);
 //        LngLat appleton = new LngLat(-3.1870,55.9445);
@@ -75,13 +78,6 @@ public class PathCharterTest {
 //
 //        for (PathCharter.PathPoint point: refine){
 //            System.out.println("[" + point.location().lng() + "," + point.location().lat() + "],");
-//        }
-//
-//        System.out.println(new LngLatHandler().nextPosition(new LngLat(-3.187, 55.9445), 157.5));
-//        System.out.println(refine.length);
-//
-//        for (int i = 1; i < refine .length;i++){
-//            System.out.println(new LngLatHandler().distanceTo(refine[i -1].location(), refine[i].location()));
 //        }
     }
 }
