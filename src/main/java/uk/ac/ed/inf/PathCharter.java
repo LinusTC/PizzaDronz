@@ -163,7 +163,7 @@ public class PathCharter {
             PathPoint[] subPath = AstarAlg(curr, next, maxMoveDistance);
             assert subPath != null;
 
-            refinedPath.addAll(Arrays.asList(subPath).subList(1, Objects.requireNonNull(subPath).length));
+            refinedPath.addAll(Arrays.asList(subPath).subList(1, subPath.length));
 
             curr = refinedPath.get(refinedPath.size() - 1).location;
         }
