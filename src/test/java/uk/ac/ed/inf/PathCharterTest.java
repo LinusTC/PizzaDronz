@@ -50,7 +50,6 @@ public class PathCharterTest {
 
                 double distance = new LngLatHandler().distanceTo(new LngLat(fromLng1, fromLat1), new LngLat(toLng, toLat));
                 distances[i] = distance;
-                System.out.println("[" + fromLng1 + "," + fromLat1 + "] to [" + toLng + "," + toLat + "], Distance: " + distance + ", Angle: " + path[i].angle());
             }
 
             boolean allValuesAreValid = validateDistances(distances);
