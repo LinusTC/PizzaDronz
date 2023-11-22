@@ -1,6 +1,7 @@
 package uk.ac.ed.inf;
 
 import org.junit.Test;
+import uk.ac.ed.inf.ilp.constant.SystemConstants;
 import uk.ac.ed.inf.ilp.data.*;
 import static org.junit.Assert.*;
 
@@ -8,6 +9,9 @@ import java.time.LocalDate;
 import java.util.Random;
 
 public class PathCharterTest {
+
+    private static final double maxMoveDistance = SystemConstants.DRONE_MOVE_DISTANCE;
+    private static final double hoverAngle = 999;
 
     @Test
     public void validatePathCharacteristics() {
@@ -62,7 +66,7 @@ public class PathCharterTest {
 
     private boolean validateDistances(double[] distances) {
         for (double distance : distances) {
-            if (Math.abs(distance - 0.00015) > 1e-10 && Math.abs(distance) > 1e-10) {
+            if (Math.abs(distance - maxMoveDistance) > 1e-10 && Math.abs(distance) > 1e-10) {
                 return false;
             }
         }
@@ -72,7 +76,7 @@ public class PathCharterTest {
     private boolean validateAngles(Move[] path) {
         for (Move move : path) {
             double angle = move.angle();
-            if (Math.abs(angle) > 1e-10 && (angle % 22.5 > 1e-10 && angle % 999 > 1e-10)) {
+            if (Math.abs(angle) > 1e-10 && (angle % 22.5 > 1e-10 && angle % hoverAngle > 1e-10)) {
                 return false;
             }
 
@@ -98,7 +102,7 @@ public class PathCharterTest {
 
         int angleCount = 0;
         for (Move move : path) {
-            if (move.angle() == 999) {
+            if (move.angle() == hoverAngle) {
                 angleCount += 1;
             }
         }

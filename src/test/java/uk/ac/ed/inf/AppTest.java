@@ -21,6 +21,8 @@ public class AppTest{
     LocalDate[] randomDates = new LocalDate[4];
     String projectDir = System.getProperty("user.dir") + "/resultfiles/";
 
+
+    //This test that files are generated in /resultfiles/ and deletes it after testing
     @Test
     public void testFileGeneration(){
 
