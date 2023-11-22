@@ -10,21 +10,7 @@ import java.util.Random;
 public class PathCharterTest {
 
     @Test
-    public void testAngleValidation() {
-        validatePathCharacteristics(1);
-    }
-
-    @Test
-    public void testNodeDistances() {
-        validatePathCharacteristics(2);
-    }
-
-    @Test
-    public void testNumberOfValidHovers() {
-        validatePathCharacteristics(3);
-    }
-
-    private void validatePathCharacteristics(int checkValues) {
+    public void validatePathCharacteristics() {
         GetDataFromRest.setBaseUrl("https://ilp-rest.azurewebsites.net");
 
         //Pick 4 random dates
@@ -63,20 +49,14 @@ public class PathCharterTest {
                 System.out.println("[" + fromLng1 + "," + fromLat1 + "] to [" + toLng + "," + toLat + "], Distance: " + distance + ", Angle: " + path[i].angle());
             }
 
-            if (checkValues == 1) {
-                boolean allValuesAreValid = validateDistances(distances);
-                assertTrue("All distance between nodes are either 0.00015 or 0", allValuesAreValid);
-            }
+            boolean allValuesAreValid = validateDistances(distances);
+            assertTrue("All distance between nodes are either 0.00015 or 0", allValuesAreValid);
 
-            if(checkValues == 2){
-                boolean allAnglesAreValid = validateAngles(path);
-                assertTrue("All angles are either multiples of 22.5 or 999", allAnglesAreValid);
-            }
+            boolean allAnglesAreValid = validateAngles(path);
+            assertTrue("All angles are either multiples of 22.5 or 999", allAnglesAreValid);
 
-            else {
-                boolean correctNumberHovers = validateHovers(path, validOrdersDate);
-                assertTrue("Correct number of hovers", correctNumberHovers);
-            }
+            boolean correctNumberHovers = validateHovers(path, validOrdersDate);
+            assertTrue("Correct number of hovers", correctNumberHovers);
         }
     }
 
