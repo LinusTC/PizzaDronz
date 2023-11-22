@@ -66,6 +66,7 @@
                 </transformer>
               </transformers>
               <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+              <finalName>${project.artifactId}-${project.version}</finalName>
             </configuration>
           </execution>
         </executions>
