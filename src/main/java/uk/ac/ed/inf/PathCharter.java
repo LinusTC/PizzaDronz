@@ -1,6 +1,7 @@
 package uk.ac.ed.inf;
 
 import uk.ac.ed.inf.ilp.constant.OrderStatus;
+import uk.ac.ed.inf.ilp.constant.SystemConstants;
 import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.data.Order;
@@ -13,7 +14,8 @@ public class PathCharter {
     private static final NamedRegion central = GetDataFromRest.getCentralAreaData();
     private static final NamedRegion[] noFlyZones = GetDataFromRest.getNoFlyZones();
     private static final LngLatHandler handler = new LngLatHandler();
-    private static final double maxMoveDistance = 0.00015;
+    private static final double maxMoveDistance = SystemConstants.DRONE_MOVE_DISTANCE;
+    private static final double hoverAngle = 999;
 
     //totalMoves is a method that gets all the moves the drone will make on a given day
     public static Move[] totalMoves(Order[] ordersToChart) {
@@ -29,7 +31,7 @@ public class PathCharter {
                 double angle = next.angleFromParent;
 
                 if(next.equals(current)){
-                    angle = 999;
+                    angle = hoverAngle;
                 }
                 orderMovesList.add(pptoMove(order, current.location, angle, next.location));
             }
@@ -67,6 +69,8 @@ public class PathCharter {
 
         //If restaurant is in central, find path
         if (handler.isInCentralArea(restLocation, central)){
+
+            //Using a large stepSize to reduce search space
             double stepSize = handler.distanceTo(startPoint, restLocation)/6;
 
             PathPoint[] unrefinedPathToRest = AstarAlg(startPoint, restLocation, stepSize);
@@ -97,6 +101,7 @@ public class PathCharter {
         //Go to edge restaurant is closest then go directly to restaurant from edge
         else{
             LngLat edge = closestEdge(restLocation);
+            //Using a large stepSize to reduce search space
             double stepSizeToEdge = handler.distanceTo(startPoint, edge)/6;
             double stepSizeToRest = handler.distanceTo(edge, restLocation)/6;
 
@@ -226,7 +231,7 @@ public class PathCharter {
                 List<PathPoint> path = new ArrayList<>();
                 Node temp = currentNode;
                 while (temp != null){
-                    PathPoint newPP = new PathPoint(temp.location,999);
+                    PathPoint newPP = new PathPoint(temp.location,hoverAngle);
                     path.add(newPP);
                     temp = temp.parent();
                 }
@@ -236,6 +241,7 @@ public class PathCharter {
 
             //Create a childNodes list
             List<Node> childNodes = new ArrayList<>();
+            //Loop through 16 nodes, each being a multiple of 22.5 until 360 degrees
             for (int i = 0; i < 16; i++){
                 //Location of child
                 LngLat parentLocation = currentNode.location;
@@ -320,7 +326,7 @@ public class PathCharter {
         return true;
     }
 
-    //Get the central edge closest to restaurant
+    //Get the central edge closest to restaurant, this algorithm takes into account if central area is a polygon
     private static LngLat closestEdge (LngLat restaurantLocation){
 
         LngLat closestEdge = null;
@@ -331,7 +337,7 @@ public class PathCharter {
         }
 
         LngLat[] vertices = central.vertices();
-        double a, b, c, d, dot, lenSq, cosTheta, minDist = 100000, dist;
+        double a, b, c, d, dot, lenSq, cosTheta, minDist = Double.MAX_VALUE, dist;
         int n = vertices.length;
 
         for (int i = 0, j = n - 1; i < n; j = i++) {
@@ -376,7 +382,7 @@ public class PathCharter {
     private static double calculateBearing(LngLat start, LngLat end) {
 
         if(start.equals(end)){
-            return 999;
+            return hoverAngle;
         }
 
         double deltaX = end.lng() - start.lng();

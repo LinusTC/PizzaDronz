@@ -17,7 +17,6 @@ import java.util.Arrays;
 
 public class GetDataFromRest {
     private static String baseURL;
-
     public static void setBaseUrl(String baseUrl) {
         baseURL = baseUrl;
     }

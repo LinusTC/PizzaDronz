@@ -1,10 +1,9 @@
 package uk.ac.ed.inf;
 
+import uk.ac.ed.inf.ilp.constant.SystemConstants;
 import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.interfaces.LngLatHandling;
-import static uk.ac.ed.inf.GetDataFromRest.*;
-
 public class LngLatHandler implements LngLatHandling{
 
     @Override
@@ -23,7 +22,7 @@ public class LngLatHandler implements LngLatHandling{
 
     @Override
     public boolean isCloseTo(LngLat startPosition, LngLat otherPosition) {
-        return (distanceTo(startPosition, otherPosition) < 0.00015);
+        return (distanceTo(startPosition, otherPosition) < SystemConstants.DRONE_IS_CLOSE_DISTANCE);
     }
 
     @Override
@@ -40,15 +39,21 @@ public class LngLatHandler implements LngLatHandling{
             return startPosition;
         }
 
-        double nextX = startPosition.lng() + (.00015 * Math.cos(Math.toRadians(angle)));
-        double nextY = startPosition.lat() + (.00015 * Math.sin(Math.toRadians(angle)));
+        double nextX = startPosition.lng() + (SystemConstants.DRONE_MOVE_DISTANCE * Math.cos(Math.toRadians(angle)));
+        double nextY = startPosition.lat() + (SystemConstants.DRONE_MOVE_DISTANCE * Math.sin(Math.toRadians(angle)));
 
         return new LngLat(nextX, nextY);
     }
 
     @Override
     public boolean isInCentralArea(LngLat point, NamedRegion centralArea) {
-        return isPointInRegion(getCentralAreaData().vertices(), point);
+        if (centralArea == null) {
+            throw new IllegalArgumentException("the named region is null");
+        } else if (!centralArea.name().equals("central")) {
+            throw new IllegalArgumentException("the named region: " + centralArea.name() + " is not valid - must be: central");
+        } else {
+            return this.isInRegion(point, centralArea);
+        }
     }
 
 

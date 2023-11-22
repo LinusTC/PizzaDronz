@@ -1,5 +1,6 @@
 package uk.ac.ed.inf;
 
+import uk.ac.ed.inf.ilp.constant.SystemConstants;
 import uk.ac.ed.inf.ilp.data.Order;
 import java.util.regex.*;
 import uk.ac.ed.inf.ilp.data.Pizza;
@@ -149,7 +150,7 @@ public class OrderValidator implements OrderValidation {
     private static boolean totalAccurate (Order order){
 
         int customerTotal = order.getPriceTotalInPence();
-        int deliveryFee = 100;
+        int deliveryFee = SystemConstants.ORDER_CHARGE_IN_PENCE;
         int menuTotal = 0;
         for (Pizza pizza: order.getPizzasInOrder()){
             menuTotal += pizza.priceInPence();
@@ -161,7 +162,7 @@ public class OrderValidator implements OrderValidation {
 
     //Check number of pizzas is valid
     private static boolean validPizzaCount (Order order){
-        return order.getPizzasInOrder().length >= 1 && order.getPizzasInOrder().length <= 4;
+        return order.getPizzasInOrder().length >= 1 && order.getPizzasInOrder().length <= SystemConstants.MAX_PIZZAS_PER_ORDER;
     }
 
     //Find which restaurant a pizza is from
