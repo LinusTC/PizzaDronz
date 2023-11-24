@@ -73,14 +73,13 @@ public class PathCharter {
             //Using a large stepSize to reduce search space
             double stepSize = handler.distanceTo(startPoint, restLocation)/6;
 
-            PathPoint[] unrefinedPathToRest = AstarAlg(startPoint, restLocation, stepSize);
-            assert unrefinedPathToRest != null;
-            PathPoint[] pathToRest = fullyRefine(unrefinedPathToRest, restLocation);
+            //Appleton to Restaurant
+            PathPoint[] pathToRest = twoStep(startPoint, restLocation, stepSize);
 
-            PathPoint[] unrefinedPathToAT = AstarAlg(pathToRest[pathToRest.length-1].location, appleton, stepSize);
-            assert unrefinedPathToAT != null;
-            PathPoint[] restToAT = fullyRefine(unrefinedPathToAT, appleton);
+            //Restaurant to Appleton
+            PathPoint[] restToAT = twoStep(pathToRest[pathToRest.length-1].location, appleton, stepSize);
 
+            //Combine Paths
             PathPoint[] fullPath = Stream.of(pathToRest, restToAT)
                     .flatMap(Arrays::stream)
                     .toArray(PathPoint[]::new);
@@ -93,7 +92,6 @@ public class PathCharter {
 
                 fullPath[i] = new PathPoint(fullPath[i].location, angle);
             }
-
             validOrder.setOrderStatus(OrderStatus.DELIVERED);
             return fullPath;
         }
@@ -106,24 +104,16 @@ public class PathCharter {
             double stepSizeToRest = handler.distanceTo(edge, restLocation)/6;
 
             //Appleton to edge
-            PathPoint[] unrefinedPt1 = AstarAlg(startPoint,edge, stepSizeToEdge);
-            assert unrefinedPt1 != null;
-            PathPoint[] pt1 = fullyRefine(unrefinedPt1, edge);
+            PathPoint[] pt1 = twoStep(startPoint, edge, stepSizeToEdge);
 
             //Edge to restaurant
-            PathPoint[] unrefinedPt2 = AstarAlg(pt1[pt1.length - 1].location, restLocation, stepSizeToRest);
-            assert unrefinedPt2 != null;
-            PathPoint[] pt2 = fullyRefine(unrefinedPt2, restLocation);
+            PathPoint[] pt2 = twoStep(pt1[pt1.length - 1].location, restLocation, stepSizeToRest);
 
             //Restaurant back to edge
-            PathPoint[] unrefinedPt3 = AstarAlg(pt2[pt2.length - 1].location, edge, stepSizeToRest);
-            assert unrefinedPt3 != null;
-            PathPoint[] pt3 = fullyRefine(unrefinedPt3, edge);
+            PathPoint[] pt3 = twoStep(pt2[pt2.length - 1].location, edge, stepSizeToRest);
 
             //Edge to appleton
-            PathPoint[] unrefinedPt4 = AstarAlg(pt3[pt3.length - 1].location, appleton, stepSizeToEdge);
-            assert unrefinedPt4 != null;
-            PathPoint[] pt4 = fullyRefine(unrefinedPt4, appleton);
+            PathPoint[] pt4 = twoStep(pt3[pt3.length - 1].location, appleton, stepSizeToEdge);
 
             //Remove the hover move when the drone reaches an edge
             if (pt2.length > 1) {
@@ -133,7 +123,7 @@ public class PathCharter {
                 pt4 = Arrays.copyOfRange(pt4, 1, pt4.length);
             }
 
-            validOrder.setOrderStatus(OrderStatus.DELIVERED);
+            //Combine paths
             PathPoint[] fullPath = Stream.of(pt1, pt2, pt3, pt4)
                     .flatMap(Arrays::stream)
                     .toArray(PathPoint[]::new);
@@ -147,9 +137,15 @@ public class PathCharter {
                 fullPath[i] = new PathPoint(fullPath[i].location, angle);
             }
 
+            validOrder.setOrderStatus(OrderStatus.DELIVERED);
             return fullPath;
-
         }
+    }
+
+    private static PathPoint[] twoStep(LngLat startPoint, LngLat endPoint, double intialStepSize){
+        PathPoint[] unrefined = AstarAlg(startPoint,endPoint,intialStepSize);
+        assert unrefined != null;
+        return fullyRefine(unrefined, endPoint);
     }
 
     //Refine the path so that the distance between each node is 0.00015
