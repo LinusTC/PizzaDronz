@@ -4,7 +4,6 @@ import org.junit.Test;
 import uk.ac.ed.inf.ilp.constant.SystemConstants;
 import uk.ac.ed.inf.ilp.data.*;
 import static org.junit.Assert.*;
-
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Random;

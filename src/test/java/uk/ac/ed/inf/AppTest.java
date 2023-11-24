@@ -2,8 +2,6 @@ package uk.ac.ed.inf;
 
 import org.junit.After;
 import org.junit.Test;
-import uk.ac.ed.inf.ilp.data.Order;
-import uk.ac.ed.inf.ilp.data.Restaurant;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -25,7 +23,7 @@ public class AppTest {
 
     // This test that files are generated in /resultfiles/ and deletes them after testing
     @Test
-    public void testFileGeneration() throws IOException {
+    public void testFileGeneration(){
         // Generate 8 random dates
         while (randomDates.size() < 8) {
             LocalDate date = generateRandomDate(startDate, endDate);
