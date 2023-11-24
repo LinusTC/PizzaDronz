@@ -31,6 +31,7 @@ public class PathCharterTest {
         //Generate path for orders on a random Date and see if the path is valid
         for (LocalDate date : randomDates) {
             final long startTime = System.nanoTime();
+
             Order[] allOrdersDate = GetDataFromRest.getOrdersOnDay(date);
             Restaurant[] restaurantData = GetDataFromRest.getRestaurantsData();
             for (Order order : allOrdersDate) {
