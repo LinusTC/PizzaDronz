@@ -20,6 +20,11 @@ public class OrderValidatorTest {
         testOrders(1);
     }
 
+    @Test
+    public void testAllValidationCodesPresent() {
+        testOrders(2);
+    }
+
     private void testOrders(int number){
         GetDataFromRest.setBaseUrl("https://ilp-rest.azurewebsites.net");
 
@@ -32,7 +37,7 @@ public class OrderValidatorTest {
             randomDates[i] = date;
         }
 
-        for(LocalDate date: randomDates){
+        for(LocalDate date : randomDates){
             Restaurant[] restaurants = GetDataFromRest.getRestaurantsData();
             Order[] ordersOnDay = GetDataFromRest.getOrdersOnDay(date);
 
@@ -44,12 +49,70 @@ public class OrderValidatorTest {
                     assertNotEquals("Order status should not be undefined", OrderStatus.UNDEFINED, order.getOrderStatus());
                 }
 
-                else{
+                else if (number == 1){
                     assertNotNull("Order validation code should not be null", order.getOrderValidationCode());
                     assertNotEquals("Order validation code should not be undefined", OrderValidationCode.UNDEFINED, order.getOrderValidationCode());
                 }
             }
+
+            if (number == 2) {
+                testAllValidationCodesPresent(ordersOnDay, date);
+            }
         }
+    }
+
+    private void testAllValidationCodesPresent(Order[] ordersOnDay, LocalDate date) {
+        boolean isNoError = false;
+        boolean isCardNumberInvalid = false;
+        boolean isExpiryDateInvalid = false;
+        boolean isCvvInvalid = false;
+        boolean isTotalIncorrect = false;
+        boolean isPizzaNotDefined = false;
+        boolean isMaxPizzaCountExceeded = false;
+        boolean isPizzaFromMultipleRestaurants = false;
+        boolean isRestaurantClosed = false;
+
+        for (Order order : ordersOnDay) {
+            switch (order.getOrderValidationCode()) {
+                case NO_ERROR:
+                    isNoError = true;
+                    break;
+                case CARD_NUMBER_INVALID:
+                    isCardNumberInvalid = true;
+                    break;
+                case EXPIRY_DATE_INVALID:
+                    isExpiryDateInvalid = true;
+                    break;
+                case CVV_INVALID:
+                    isCvvInvalid = true;
+                    break;
+                case TOTAL_INCORRECT:
+                    isTotalIncorrect = true;
+                    break;
+                case PIZZA_NOT_DEFINED:
+                    isPizzaNotDefined = true;
+                    break;
+                case MAX_PIZZA_COUNT_EXCEEDED:
+                    isMaxPizzaCountExceeded = true;
+                    break;
+                case PIZZA_FROM_MULTIPLE_RESTAURANTS:
+                    isPizzaFromMultipleRestaurants = true;
+                    break;
+                case RESTAURANT_CLOSED:
+                    isRestaurantClosed = true;
+                    break;
+            }
+        }
+
+        assertTrue("OrderValidationCode NO_ERROR should be present for date " + date, isNoError);
+        assertTrue("OrderValidationCode CARD_NUMBER_INVALID should be present for date " + date, isCardNumberInvalid);
+        assertTrue("OrderValidationCode EXPIRY_DATE_INVALID should be present for date " + date, isExpiryDateInvalid);
+        assertTrue("OrderValidationCode CVV_INVALID should be present for date " + date, isCvvInvalid);
+        assertTrue("OrderValidationCode TOTAL_INCORRECT should be present for date " + date, isTotalIncorrect);
+        assertTrue("OrderValidationCode PIZZA_NOT_DEFINED should be present for date " + date, isPizzaNotDefined);
+        assertTrue("OrderValidationCode MAX_PIZZA_COUNT_EXCEEDED should be present for date " + date, isMaxPizzaCountExceeded);
+        assertTrue("OrderValidationCode PIZZA_FROM_MULTIPLE_RESTAURANTS should be present for date " + date, isPizzaFromMultipleRestaurants);
+        assertTrue("OrderValidationCode RESTAURANT_CLOSED should be present for date " + date, isRestaurantClosed);
     }
 
     private LocalDate generateRandomDate(LocalDate startDate, LocalDate endDate) {
