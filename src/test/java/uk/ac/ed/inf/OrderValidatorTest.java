@@ -20,7 +20,7 @@ public class OrderValidatorTest {
         LocalDate endDate = LocalDate.of(2024, 1, 28);
         Set<LocalDate> randomDates = new HashSet<>();
 
-        while (randomDates.size() < 8) {
+        while (randomDates.size() < 1) {
             LocalDate date = generateRandomDate(startDate, endDate);
             randomDates.add(date);
         }

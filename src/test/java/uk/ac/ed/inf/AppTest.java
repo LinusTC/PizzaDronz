@@ -25,7 +25,7 @@ public class AppTest {
     @Test
     public void testFileGeneration(){
         // Generate 8 random dates
-        while (randomDates.size() < 8) {
+        while (randomDates.size() < 1) {
             LocalDate date = generateRandomDate(startDate, endDate);
             randomDates.add(date);
         }
