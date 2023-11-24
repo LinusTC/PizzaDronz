@@ -6,58 +6,40 @@ import uk.ac.ed.inf.ilp.data.*;
 import static org.junit.Assert.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public class OrderValidatorTest {
-
     @Test
-    public void testOrderStatus() {
-        testOrders(0);
-    }
-
-    @Test
-    public void testValidationCode(){
-        testOrders(1);
-    }
-
-    @Test
-    public void testAllValidationCodesPresent() {
-        testOrders(2);
-    }
-
-    private void testOrders(int number){
+    public void testOrders(){
         GetDataFromRest.setBaseUrl("https://ilp-rest.azurewebsites.net");
 
         //Pick 4 random dates
-        LocalDate[] randomDates = new LocalDate[4];
         LocalDate startDate = LocalDate.of(2023, 9, 1);
         LocalDate endDate = LocalDate.of(2024, 1, 28);
-        for (int i = 0; i < 4; i++) {
+        Set<LocalDate> randomDateSet = new HashSet<>();
+
+        while (randomDateSet.size() < 8) {
             LocalDate date = generateRandomDate(startDate, endDate);
-            randomDates[i] = date;
+            randomDateSet.add(date);
         }
 
-        for(LocalDate date : randomDates){
+        for(LocalDate date : randomDateSet){
             Restaurant[] restaurants = GetDataFromRest.getRestaurantsData();
             Order[] ordersOnDay = GetDataFromRest.getOrdersOnDay(date);
 
             for(Order order: ordersOnDay){
                 new OrderValidator().validateOrder(order,restaurants);
 
-                if(number == 0){
-                    assertNotNull("Order status should not be null", order.getOrderStatus());
-                    assertNotEquals("Order status should not be undefined", OrderStatus.UNDEFINED, order.getOrderStatus());
-                }
+                assertNotNull("Order status should not be null", order.getOrderStatus());
+                assertNotEquals("Order status should not be undefined", OrderStatus.UNDEFINED, order.getOrderStatus());
 
-                else if (number == 1){
-                    assertNotNull("Order validation code should not be null", order.getOrderValidationCode());
-                    assertNotEquals("Order validation code should not be undefined", OrderValidationCode.UNDEFINED, order.getOrderValidationCode());
-                }
-            }
+                assertNotNull("Order validation code should not be null", order.getOrderValidationCode());
+                assertNotEquals("Order validation code should not be undefined", OrderValidationCode.UNDEFINED, order.getOrderValidationCode());
 
-            if (number == 2) {
-                testAllValidationCodesPresent(ordersOnDay, date);
             }
+            testAllValidationCodesPresent(ordersOnDay, date);
         }
     }
 

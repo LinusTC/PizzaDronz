@@ -77,7 +77,7 @@ public class OrderValidator implements OrderValidation {
     private static boolean checkLuhn(String cardNum){
         int digits = cardNum.length();
 
-        if (digits == 0){
+        if (digits != 16 || !cardNum.matches("\\d+")) {
             return false;
         }
         int numSum = 0;
