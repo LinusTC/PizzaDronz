@@ -6,7 +6,9 @@ import uk.ac.ed.inf.ilp.data.*;
 import static org.junit.Assert.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public class PathCharterTest {
 
@@ -17,18 +19,19 @@ public class PathCharterTest {
     public void validatePathCharacteristics() {
         GetDataFromRest.setBaseUrl("https://ilp-rest.azurewebsites.net");
 
-        //Pick 4 random dates
-        LocalDate[] randomDates = new LocalDate[4];
+        //Pick random dates
         LocalDate startDate = LocalDate.of(2023, 9, 1);
         LocalDate endDate = LocalDate.of(2024, 1, 28);
-        for (int i = 0; i < 4; i++) {
+        Set<LocalDate> randomDates = new HashSet<>();
+
+        while (randomDates.size() < 8) {
             LocalDate date = generateRandomDate(startDate, endDate);
-            randomDates[i] = date;
+            randomDates.add(date);
         }
 
         //Generate path for orders on a random Date and see if the path is valid
         for (LocalDate date : randomDates) {
-
+            final long startTime = System.nanoTime();
             Order[] allOrdersDate = GetDataFromRest.getOrdersOnDay(date);
             Restaurant[] restaurantData = GetDataFromRest.getRestaurantsData();
             for (Order order : allOrdersDate) {
@@ -60,6 +63,9 @@ public class PathCharterTest {
 
             boolean correctNumberHovers = validateHovers(path, validOrdersDate);
             assertTrue("Correct number of hovers", correctNumberHovers);
+
+            final long duration = System.nanoTime() - startTime;
+            System.out.println("Runtime for " + date + ": " + duration/1000000000 + " seconds");
         }
     }
 

@@ -15,17 +15,17 @@ public class OrderValidatorTest {
     public void testOrders(){
         GetDataFromRest.setBaseUrl("https://ilp-rest.azurewebsites.net");
 
-        //Pick 4 random dates
+        //Pick random dates
         LocalDate startDate = LocalDate.of(2023, 9, 1);
         LocalDate endDate = LocalDate.of(2024, 1, 28);
-        Set<LocalDate> randomDateSet = new HashSet<>();
+        Set<LocalDate> randomDates = new HashSet<>();
 
-        while (randomDateSet.size() < 8) {
+        while (randomDates.size() < 8) {
             LocalDate date = generateRandomDate(startDate, endDate);
-            randomDateSet.add(date);
+            randomDates.add(date);
         }
 
-        for(LocalDate date : randomDateSet){
+        for(LocalDate date : randomDates){
             Restaurant[] restaurants = GetDataFromRest.getRestaurantsData();
             Order[] ordersOnDay = GetDataFromRest.getOrdersOnDay(date);
 

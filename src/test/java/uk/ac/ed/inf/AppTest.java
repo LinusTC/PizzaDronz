@@ -8,64 +8,48 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import static org.junit.Assert.assertTrue;
 
 /**
  * Unit test for simple App.
  */
-public class AppTest{
+public class AppTest {
     LocalDate startDate = LocalDate.of(2023, 9, 1);
     LocalDate endDate = LocalDate.of(2024, 1, 28);
-    LocalDate[] randomDates = new LocalDate[4];
+    Set<LocalDate> randomDates = new HashSet<>();
     String projectDir = System.getProperty("user.dir") + "/resultfiles/";
 
-
-    //This test that files are generated in /resultfiles/ and deletes it after testing
+    // This test that files are generated in /resultfiles/ and deletes them after testing
     @Test
-    public void testFileGeneration(){
-
-        String urlInput = "https://ilp-rest.azurewebsites.net";
-        GetDataFromRest.setBaseUrl(urlInput);
-
-        for (int i = 0; i < 4; i++) {
+    public void testFileGeneration() throws IOException {
+        // Generate 8 random dates
+        while (randomDates.size() < 8) {
             LocalDate date = generateRandomDate(startDate, endDate);
-            randomDates[i] = date;
+            randomDates.add(date);
         }
 
-        for (LocalDate date: randomDates){//Get data from REST
-            Order[] allOrdersDate = GetDataFromRest.getOrdersOnDay(date);
-            Restaurant[] restaurantData = GetDataFromRest.getRestaurantsData();
+        for (LocalDate date : randomDates) {
+            String dateStr = date.toString();
 
-            //Validate Orders
-            for (Order order : allOrdersDate) {
-                new OrderValidator().validateOrder(order, restaurantData);
-            }
+            App.main(new String[]{dateStr, "https://ilp-rest.azurewebsites.net"});
 
-            //Get all valid orders
-            Order[] validOrdersDate = OrderValidator.filterValidOrders(allOrdersDate);
+            String flightPathFileName = projectDir + "flightpath-" + dateStr + ".json";
+            String droneFileName = projectDir + "drone-" + dateStr + ".geojson";
+            String deliveriesFileName = projectDir + "deliveries-" + dateStr + ".json";
 
-            //Create the drone path
-            Move[] path = PathCharter.totalMoves(validOrdersDate);
-
-            CreateJsonDocuments.createFlightPath(date, path);
-            CreateJsonDocuments.createDrone(date, path);
-            CreateJsonDocuments.createDeliveries(date, allOrdersDate);
-
-            String flightPathFileName = projectDir + "flightpath-" + date + ".json";
-            String droneFileName = projectDir + "drone-" + date + ".geojson";
-            String deliveriesFileName = projectDir + "deliveries-" + date + ".json";
-
-            // Assert that the files exist
-            assertTrue("Flight path file for " + date + " not created", Files.exists(Paths.get(flightPathFileName)));
-            assertTrue("Drone file for " + date + " not created", Files.exists(Paths.get(droneFileName)));
-            assertTrue("Deliveries file for " + date + " not created", Files.exists(Paths.get(deliveriesFileName)));}
+            assertTrue("Flight path file for " + dateStr + " not created", Files.exists(Paths.get(flightPathFileName)));
+            assertTrue("Drone file for " + dateStr + " not created", Files.exists(Paths.get(droneFileName)));
+            assertTrue("Deliveries file for " + dateStr + " not created", Files.exists(Paths.get(deliveriesFileName)));
+        }
     }
+
     @After
     public void cleanup() throws IOException {
-        for(LocalDate date: randomDates){
-
+        for (LocalDate date : randomDates) {
             String flightPathFileName = projectDir + "flightpath-" + date + ".json";
             String droneFileName = projectDir + "drone-" + date + ".geojson";
             String deliveriesFileName = projectDir + "deliveries-" + date + ".json";
@@ -74,7 +58,7 @@ public class AppTest{
             Files.deleteIfExists(Paths.get(droneFileName));
             Files.deleteIfExists(Paths.get(deliveriesFileName));
 
-            System.out.println("Files for "+ date + " were successfully created and deleted after testing.");
+            System.out.println("Files for " + date + " were successfully created and deleted after testing.");
         }
     }
 
