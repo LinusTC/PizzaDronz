@@ -57,10 +57,8 @@ public class PathCharterTest {
 
             boolean allValuesAreValid = validateDistances(distances);
             assertTrue("All distance between nodes are either 0.00015 or 0", allValuesAreValid);
-
             boolean allAnglesAreValid = validateAngles(path);
             assertTrue("All angles are either multiples of 22.5 or 999", allAnglesAreValid);
-
             boolean correctNumberHovers = validateHovers(path, validOrdersDate);
             assertTrue("Correct number of hovers", correctNumberHovers);
 
