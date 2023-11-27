@@ -85,7 +85,6 @@ public class App
     //Check if we can get all the data we need from the provided URL
     private static boolean validURL (String baseURL){
         try {
-
             String[] paths = new String[]{"/restaurants", "/centralArea", "/noFlyZones", "/orders"};
 
             for (String path: paths){
@@ -101,6 +100,7 @@ public class App
             return true;
 
         } catch (IOException e) {
+            System.out.println("Invalid URL");
             return false;
         }
     }
