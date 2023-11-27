@@ -16,15 +16,16 @@ import static org.junit.Assert.assertTrue;
  * Unit test for simple App.
  */
 public class AppTest {
+    //If you want to test for a specific date, set startDate to the date you want to test and endDate to startDate+ 1 day
     LocalDate startDate = LocalDate.of(2023, 9, 1);
     LocalDate endDate = LocalDate.of(2024, 1, 28);
     Set<LocalDate> randomDates = new HashSet<>();
     String projectDir = System.getProperty("user.dir") + "/resultfiles/";
 
-    // This test that files are generated in /resultfiles/ and deletes them after testing
+    // This test if files are generated in /resultfiles/ directory and deletes them after testing
     @Test
     public void testFileGeneration(){
-        // Generate 8 random dates
+        //Adjust the number of random dates you want to test below
         while (randomDates.size() < 1) {
             LocalDate date = generateRandomDate(startDate, endDate);
             randomDates.add(date);

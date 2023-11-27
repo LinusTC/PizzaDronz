@@ -18,11 +18,13 @@ public class PathCharterTest {
     public void validatePathCharacteristics() {
         GetDataFromRest.setBaseUrl("https://ilp-rest.azurewebsites.net");
 
-        //Pick random dates
+        //If you want to test for a specific date, set startDate to the date you want to test and endDate to startDate+ 1 day
+        //Pick random dates in range of startDate and endDate
         LocalDate startDate = LocalDate.of(2023, 9, 1);
         LocalDate endDate = LocalDate.of(2024, 1, 28);
         Set<LocalDate> randomDates = new HashSet<>();
 
+        //Adjust the number of dates you want to test
         while (randomDates.size() < 1) {
             LocalDate date = generateRandomDate(startDate, endDate);
             randomDates.add(date);

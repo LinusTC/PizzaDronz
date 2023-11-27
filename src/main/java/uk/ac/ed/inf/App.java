@@ -12,22 +12,16 @@ public class App
     public static void main(String[] args){
         final long startTime = System.nanoTime();
 
-//        if(args.length != 2){
-//            System.out.println("Please input date and url only");
-//            System.exit(0);
-//        }
-//        String dateInput = args[0];
-//        String urlInput = args[1];
-
-        String dateInput = "2023-09-01";
-        String urlInput = "https://ilp-rest.azurewebsites.net";
-
-        if (!validDate(dateInput)){
-            System.out.println("Invalid date format. Please use the format 'yyyy-MM-dd'.");
+        //Test if number of input is valid, should only have 2: Date and URL
+        if(!validInput(args)){
             System.exit(0);
         }
 
-        if(!validURL(urlInput)){
+        String dateInput = args[0];
+        String urlInput = args[1];
+
+        //Test if the inputs are valid
+        if (!validDate(dateInput) || !validURL(urlInput)){
             System.exit(0);
         }
 
@@ -55,8 +49,25 @@ public class App
         CreateJsonDocuments.createDrone(date,path);
         CreateJsonDocuments.createDeliveries(date, allOrdersDate);
 
+        //RunTime
         final long duration = System.nanoTime() - startTime;
         System.out.println("Runtime for " + date + ": " + duration/1000000000 + " seconds");
+    }
+
+    private static boolean validInput(String[] input){
+        boolean validInput = true;
+
+        if (input.length > 2){
+            System.out.println("Please input date and url only");
+            validInput = false;
+        }
+
+        if (input.length < 2){
+            System.out.println("Please input date and url");
+            validInput = false;
+        }
+
+        return validInput;
     }
 
     //Check if input date is valid
@@ -66,6 +77,7 @@ public class App
             LocalDate.parse(date, formatter);
             return true;
         } catch (Exception e) {
+            System.out.println("Invalid date format. Please use the format 'yyyy-MM-dd'.");
             return false;
         }
     }
