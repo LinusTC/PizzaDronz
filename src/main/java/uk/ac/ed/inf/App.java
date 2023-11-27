@@ -12,15 +12,15 @@ public class App
     public static void main(String[] args){
         final long startTime = System.nanoTime();
 
-        if(args.length != 2){
-            System.out.println("Please input date and url only");
-            System.exit(0);
-        }
-        String dateInput = args[0];
-        String urlInput = args[1];
+//        if(args.length != 2){
+//            System.out.println("Please input date and url only");
+//            System.exit(0);
+//        }
+//        String dateInput = args[0];
+//        String urlInput = args[1];
 
-//        dateInput = "2023-09-01";
-//        urlInput = "https://ilp-rest.azurewebsites.net";
+        String dateInput = "2023-09-01";
+        String urlInput = "https://ilp-rest.azurewebsites.net";
 
         if (!validDate(dateInput)){
             System.out.println("Invalid date format. Please use the format 'yyyy-MM-dd'.");
@@ -28,7 +28,6 @@ public class App
         }
 
         if(!validURL(urlInput)){
-            System.out.println("Invalid URL. Use https://ilp-rest.azurewebsites.net.");
             System.exit(0);
         }
 
@@ -83,6 +82,7 @@ public class App
                 connection.setRequestMethod("GET");
 
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    System.out.println("Error accessing URL: " + url + ". Status code: " + connection.getResponseCode());
                     return false;
                 }
             }
