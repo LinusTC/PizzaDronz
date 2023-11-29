@@ -49,7 +49,7 @@ public class App
         Move[] path = PathCharter.totalMoves(validOrdersDate);
 
         //Create result files directory and 3 files
-        CreateJsonDocuments.createResultFiles();
+        CreateJsonDocuments.createDirectory();
         CreateJsonDocuments.createFlightPath(date, path);
         CreateJsonDocuments.createDrone(date,path);
         CreateJsonDocuments.createDeliveries(date, allOrdersDate);
