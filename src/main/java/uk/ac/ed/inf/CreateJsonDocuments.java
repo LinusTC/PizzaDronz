@@ -10,6 +10,20 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 public class CreateJsonDocuments {
+    public static void createResultFiles(){
+
+        String currentDirectory = System.getProperty("user.dir");
+        String resultFilesDirectory = "resultfiles";
+        File resultFilesDir = new File(currentDirectory, resultFilesDirectory);
+
+        if (!resultFilesDir.exists()) {
+            boolean success = resultFilesDir.mkdirs();
+
+            if (!success) {
+                throw new RuntimeException("Failed to create resultfiles directory.");
+            }
+        }
+    }
     public static void createDeliveries (LocalDate date, Order[] ordersOnDate) {
         JsonArray orders = new JsonArray();
 

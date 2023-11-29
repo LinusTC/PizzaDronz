@@ -20,6 +20,9 @@ public class App
         String dateInput = args[0];
         String urlInput = args[1];
 
+//        String dateInput = "2023-09-01";
+//        String urlInput = "https://ilp-rest.azurewebsites.net/";
+
         //Test if the inputs are valid
         if (!validDate(dateInput) || !validURL(urlInput)){
             System.exit(0);
@@ -45,6 +48,8 @@ public class App
         //Create the drone path
         Move[] path = PathCharter.totalMoves(validOrdersDate);
 
+        //Create result files directory and 3 files
+        CreateJsonDocuments.createResultFiles();
         CreateJsonDocuments.createFlightPath(date, path);
         CreateJsonDocuments.createDrone(date,path);
         CreateJsonDocuments.createDeliveries(date, allOrdersDate);
